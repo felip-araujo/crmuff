@@ -1,7 +1,7 @@
 const token = localStorage.getItem("token");
 
 if (!token) {
-  window.location.href = "login.html"; // Redireciona se não estiver logado
+  window.location.href = "index.html"; // Redireciona se não estiver logado
 } else {
   busca(); // chama a função se estiver logado
   buscarPDFs();

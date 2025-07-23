@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!token || nivel !== "administrator") {
     alert("Acesso não autorizado. Faça login novamente.");
-    window.location.href = "login.html"; // ou login.html
+    window.location.href = "index.html"; // ou login.html
     return;
   }
 
