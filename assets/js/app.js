@@ -156,11 +156,11 @@ async function fetchAndRenderContacts() {
         <td class="p-2">${contact.email}</td>
         <td class="p-2">${contact.status}</td>
         <td class="p-2">
-          <button onclick='openEditModal(${JSON.stringify(contact)})' class="text-blue-600 hover:underline">
+          <button onclick='openEditModal(${JSON.stringify(contact)})' class="text-gray-700 hover:underline">
     <i class="fas fa-pen"></i> 
   </button>
 
-  <button onclick="openDocumentoModal(${contact.id})" class="text-green-600 hover:underline">
+  <button onclick="openDocumentoModal(${contact.id})" class="text-blue-700 hover:underline">
     <i class="fas fa-upload"></i> 
   </button>
 

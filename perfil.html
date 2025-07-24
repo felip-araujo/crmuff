@@ -2,149 +2,199 @@
 <html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Área do Usuário</title>
-    <link rel="icon" href="assets/image/ufficio-white-favicon.png" type="image/x-icon">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Área do Usuário</title>
+  <link rel="icon" href="assets/image/ufficio-white-favicon.png" type="image/x-icon" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 
-<body class="bg-gray-100 font-sans">
+<body id="mainBody" class="font-sans text-gray-900 dark:text-white transition-colors duration-300">
 
-    <div class="min-h-screen flex">
+  <div class="min-h-screen flex bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
 
-        <!-- Sidebar -->
-        <aside class="w-64 bg-white shadow-md">
-            <div class="p-6 border-b">
-                <h2 class="text-xl font-bold text-blue-700">Minha Área</h2>
-                <p class="text-sm text-gray-600 mt-1">Bem-vindo, <span id="nomeSidebar"> </span></p>
-                
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-md dark:bg-gray-800 transition-colors duration-300">
+      <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-bold text-blue-700 dark:text-blue-400">Painel do Cliente</h2>
+        <p class="text-sm text-gray-600 mt-1 dark:text-gray-300">Bem-vindo, <span id="nomeSidebar"> </span></p>
+      </div>
+      <nav class="p-4 space-y-2 text-sm font-medium">
+        <button onclick="showSection('perfil')"
+          class="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-100 rounded dark:text-gray-300 dark:hover:bg-blue-800">
+          <i class="fas fa-user-circle text-blue-600 dark:text-blue-400"></i> Meus Dados
+        </button>
+        <button onclick="showSection('documentos')"
+          class="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-100 rounded dark:text-gray-300 dark:hover:bg-blue-800">
+          <i class="fas fa-file-signature text-blue-600 dark:text-blue-400"></i> Documentos
+        </button>
+        <button onclick="showSection('config')"
+          class="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-100 rounded dark:text-gray-300 dark:hover:bg-blue-800">
+          <i class="fas fa-cog text-blue-600 dark:text-blue-400"></i> Configurações
+        </button>
+      </nav>
+      <div class="p-6 border-t border-gray-200 dark:border-gray-700">
+        <button onclick="logoutUser()"
+          class="flex items-center gap-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-600">
+          <i class="fas fa-sign-out-alt"></i> Sair da Conta
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+
+      <!-- Meus Dados -->
+      <section id="perfil" class="section hidden">
+        <div class="bg-white p-6 rounded-xl shadow-lg relative dark:bg-gray-800 dark:text-gray-200 transition-colors">
+          <button onclick="showSection('documentos')"
+            class="absolute top-4 right-4 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-600 text-xl">
+            <i class="fas fa-times"></i>
+          </button>
+
+          <h2 class="text-2xl font-semibold text-blue-700 mb-4 flex items-center gap-2 dark:text-blue-400">
+            <i class="fas fa-user-circle"></i> Meus Dados
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700 text-base dark:text-gray-300">
+            <div class="flex items-start gap-3">
+              <i class="fas fa-user text-blue-600 mt-1 dark:text-blue-400"></i>
+              <div>
+                <p class="font-semibold">Nome</p>
+                <p id="nomeUsuario" class="text-gray-800 dark:text-gray-200">—</p>
+              </div>
             </div>
-            <nav class="p-4 space-y-2 text-sm font-medium">
-                <button onclick="showSection('perfil')"
-                    class="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-100 rounded">
-                    <i class="fas fa-user-circle text-blue-600"></i> Meus Dados
-                </button>
-                <button onclick="showSection('contrato')"
-                    class="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-100 rounded">
-                    <i class="fas fa-file-signature text-blue-600"></i> Documentos
-                </button>
-                <button onclick="showSection('memorial')"
-                    class="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-100 rounded">
-                    <i class="fas fa-scroll text-blue-600"></i> Memorial Descritivo
-                </button>
-                <button onclick="showSection('projetos')"
-                    class="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-100 rounded">
-                    <i class="fas fa-drafting-compass text-blue-600"></i> Projetos Complementares
-                </button>
-                <button onclick="showSection('config')"
-                    class="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-100 rounded">
-                    <i class="fas fa-cog text-blue-600"></i> Configurações
-                </button>
-            </nav>
-            <div class="p-6 border-t">
-                <button onclick="logoutUser()" class="flex items-center gap-2 text-red-600 hover:text-red-800">
-                    <i class="fas fa-sign-out-alt"></i> Sair da Conta
-                </button>
+
+            <div class="flex items-start gap-3">
+              <i class="fas fa-envelope text-blue-600 mt-1 dark:text-blue-400"></i>
+              <div>
+                <p class="font-semibold">E-mail</p>
+                <p id="emailUsuario" class="text-gray-800 dark:text-gray-200">—</p>
+              </div>
             </div>
-        </aside>
 
-        <!-- Main Content -->
-        <main class="flex-1 p-8">
+            <div class="flex items-start gap-3">
+              <i class="fas fa-phone text-blue-600 mt-1 dark:text-blue-400"></i>
+              <div>
+                <p class="font-semibold">Telefone</p>
+                <p id="telefoneUsuario" class="text-gray-800 dark:text-gray-200">—</p>
+              </div>
+            </div>
 
-            <!-- Meus Dados -->
-            <section id="perfil" class="section">
-                <h1 class="text-2xl font-semibold mb-4"><i class="fas fa-user-circle text-blue-600"></i> Meus Dados</h1>
-                <div class="bg-white p-6 rounded shadow-md space-y-2">
-                    <p><strong>Nome:</strong> <span id="nomeUsuario"></span></p>
-                    <p><strong>E-mail:</strong> <span id="emailUsuario"></span></p>
-                    <p><strong>Telefone:</strong> <span id="telefoneUsuario"></span></p>
-                    
-                </div>
-            </section>
+            <div class="flex items-start gap-3">
+              <i class="fas fa-circle-check mt-1" id="statusIcon"></i>
+              <div>
+                <p class="font-semibold">Status</p>
+                <p id="statusUsuario" class="text-gray-800 dark:text-gray-200">—</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <!-- Contrato -->
-            <section id="contrato" class="section hidden">
-                <h1 class="text-2xl font-semibold mb-4">📄 Contrato</h1>
-                <div class="bg-white p-6 rounded shadow-md">
-                    <p class="mb-2">Você pode visualizar ou baixar seu contrato abaixo:</p>
-                    <a href="caminho/contrato.pdf" target="_blank" class="text-blue-600 underline">📎 Ver Contrato</a>
-                </div>
-            </section>
+      <!-- Documentos -->
+      <section id="documentos" class="section hidden">
+        <h1 class="text-2xl font-semibold mb-4 dark:text-gray-200">Seus Documentos</h1>
+        <div id="pdfContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Blocos de PDFs via JS -->
+        </div>
+      </section>
 
-            <!-- Memorial Descritivo -->
-            <section id="memorial" class="section hidden">
-                <h1 class="text-2xl font-semibold mb-4">📝 Memorial Descritivo</h1>
-                <div class="bg-white p-6 rounded shadow-md">
-                    <a href="caminho/memorial.pdf" target="_blank" class="text-blue-600 underline">📄 Ver Memorial
-                        Descritivo</a>
-                </div>
-            </section>
+      <!-- Configurações -->
+      <section id="config" class="section hidden">
+        <h1 class="text-2xl font-semibold mb-4 dark:text-gray-200">Configurações</h1>
+        <div class="bg-white p-6 rounded shadow-md dark:bg-gray-800 dark:text-gray-200 transition-colors">
+          <!-- Switch -->
+          <div class="flex items-center justify-between mb-6">
+            <label class="text-gray-700 font-medium dark:text-gray-200">Tema Escuro</label>
+            <label class="inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="toggleDarkMode" class="sr-only" />
+              <div class="w-11 h-6 bg-gray-300 rounded-full shadow-inner relative transition-colors dark:bg-gray-600">
+                <div id="toggleDot"
+                  class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform"></div>
+              </div>
+            </label>
+          </div>
 
-            <!-- Projetos Complementares -->
-            <section id="projetos" class="section hidden">
-                <h1 class="text-2xl font-semibold mb-4">📐 Projetos Complementares</h1>
-                <div class="bg-white p-6 rounded shadow-md space-y-3">
-                    <a href="caminho/eletrico.pdf" target="_blank" class="text-blue-600 underline block">🔌 Projeto
-                        Elétrico</a>
-                    <a href="caminho/hidraulico.pdf" target="_blank" class="text-blue-600 underline block">🚿 Projeto
-                        Hidráulico</a>
-                </div>
-            </section>
+          <form class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome</label>
+              <input type="text" value="João da Silva"
+                class="w-full mt-1 p-2 border border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+              <input type="email" value="joao@email.com"
+                class="w-full mt-1 p-2 border border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefone</label>
+              <input type="tel" value="(11) 99999-9999"
+                class="w-full mt-1 p-2 border border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+            </div>
+            <button type="submit" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-800">
+              <i class="fas fa-save mr-2"></i>Alterar Senha
+            </button>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <i class="fas fa-save mr-2"></i>Salvar Alterações
+            </button>
+          </form>
+        </div>
+      </section>
 
-            <!-- Configurações -->
-            <section id="config" class="section hidden">
-                <h1 class="text-2xl font-semibold mb-4">⚙️ Configurações</h1>
-                <div class="bg-white p-6 rounded shadow-md">
-                    <form class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Nome</label>
-                            <input type="text" value="João da Silva"
-                                class="w-full mt-1 p-2 border border-gray-300 rounded" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" value="joao@email.com"
-                                class="w-full mt-1 p-2 border border-gray-300 rounded" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Telefone</label>
-                            <input type="tel" value="(11) 99999-9999"
-                                class="w-full mt-1 p-2 border border-gray-300 rounded" />
-                        </div>
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-save mr-2"></i>Salvar Alterações
-                        </button>
-                    </form>
-                </div>
-            </section>
+    </main>
+  </div>
 
-        </main>
-    </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggle = document.getElementById("toggleDarkMode");
+      const body = document.getElementById("mainBody");
+      const dot = document.getElementById("toggleDot");
 
-    <script>
-        function showSection(id) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.add('hidden');
-            });
-            document.getElementById(id).classList.remove('hidden');
+      function setDarkMode(enabled) {
+        if (enabled) {
+          body.classList.add("dark");
+          toggle.checked = true;
+          dot.classList.add("translate-x-5");
+          localStorage.setItem("theme", "dark");
+        } else {
+          body.classList.remove("dark");
+          toggle.checked = false;
+          dot.classList.remove("translate-x-5");
+          localStorage.setItem("theme", "light");
         }
-        function showSection(id) {
-            document.querySelectorAll('main > div').forEach(div => div.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-        }
+      }
 
-        function logoutUser() {
-            window.location.href = "index.html"; // redireciona para login do usuário
-        }
+      // Inicializar
+      const savedTheme = localStorage.getItem("theme");
+      setDarkMode(savedTheme === "dark");
 
-        // Exibir a primeira aba por padrão
-        showSection('contrato');
-    </script>
-<script src="assets/js/perfil.js"></script>
+      toggle.addEventListener("change", () => {
+        setDarkMode(toggle.checked);
+      });
 
+      // Inicialização de sessão
+      window.showSection = (id) => {
+        document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+      };
+      window.logoutUser = () => {
+        window.location.href = "index.html";
+      };
 
+      // Mostra seção padrão
+      showSection("documentos");
+    });
+  </script>
+
+  <script src="assets/js/perfil.js"></script>
 
 </body>
 
