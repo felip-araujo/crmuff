@@ -356,7 +356,7 @@ function fecharModalPDFs() {
 function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("nivel");
-  window.location.href = "login.html"; // ou login.html
+  window.location.href = "index.html"; // ou login.html
 }
 
 
