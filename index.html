@@ -16,7 +16,9 @@
 </head>
 
 <body id="mainBody"
-  class="bg-gray-100 dark:bg-stone-950 text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center transition-colors duration-200">
+  
+class="bg-gradient-to-l from-gray-50 to-gray-300 dark:from-neutral-800 dark:to-stone-950 text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center transition-colors duration-200"></body>
+
 
   <div class="absolute top-4 right-4 flex items-center gap-2">
     <label class="text-gray-700 dark:text-gray-200 font-medium">Tema Escuro</label>
@@ -30,18 +32,17 @@
     </label>
   </div>
   <div class="absolute bottom-2 right-4 flex items-center gap-2">
-    <a class="text-black-200 dark:text-gray-200 font-low" href="https://evoludesign.com.br/"> Desenvolvido por: <span
-        class="font-bold">Evolution Design</span> </a>
+    <a class="text-black-200 dark:text-gray-200 font-low text-xs " href="https://evoludesign.com.br/"> Desenvolvido por: <span
+        class="font-bold ">Evolution Design</span> </a>
   </div>
 
 
   <div
-    class="bg-white dark:bg-stone-900  p-8 rounded shadow-md w-full max-w-sm text-gray-900 dark:text-gray-100 transition-colors duration-200 mx-4">
+    class="bg-white dark:bg-stone-950 p-2 p-8 rounded shadow-md w-full max-w-sm text-gray-900 dark:text-gray-100 transition-colors duration-200 mx-4">
     <img id="logo" class="w-50 h-30 mx-auto m-0" src="assets/image-conipa/logo-black.png" alt="Logo">
 
-    <h2 class="text-1xl text-green-800 dark:text-green-300 mb-4 text-center"></h2>
 
-    <input id="username" type="text" placeholder="Usuário"
+    <input id="username" type="text" placeholder="Nome de Usuario"
       class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
 
     <div class="relative mb-4">
@@ -54,16 +55,16 @@
     </div>
 
     <button onclick="login()"
-      class="w-full bg-green-600 hover:bg-green-700 dark:hover:bg-green-500 text-white py-2 rounded transition">
+      class="w-full bg-emerald-700 text-white text-lm font-medium hover:bg-green-800 dark:bg-white dark:text-gray-800 py-2 rounded transition">
       Entrar
     </button>
 
     <p id="error" class="text-red-500 text-sm mt-4 hidden">Usuário ou senha incorretos.</p>
-    <div class="flex-row justify-start space-x-0 mt-2">
-      <a href="#" class="text-blue-600 dark:text-stone-50 text-sm">
-        <p>Esqueceu a senha?</p>
+    <div class=" border-t border-gray-400 justify-start space-x-0 mt-6">
+      <a href="#" class="text-blue-600 dark:text-stone-300 text-sm">
+        <p class="mt-2">Esqueceu a senha?</p>
       </a>
-      <a href="#" class="text-blue-600 dark:text-stone-50 text-sm">
+      <a href="#" class="text-blue-600 dark:text-stone-300 text-sm">
         <p>Cadastre-se</p>
       </a>
     </div>
