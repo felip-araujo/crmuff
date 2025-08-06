@@ -1,38 +1,119 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="transition-colors duration-300">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - CRM Nuvem</title>
-  <link rel="icon" href="assets/image/ufficio-white-favicon.png" type="image/x-icon">
+  <title>Sistema Integrado - Conipa</title>
+  <link rel="icon" href="assets/image-conipa/table-cells-row-unlock-solid-full.svg" type="image/x-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
-
+  <script>
+    tailwind.config = {
+      darkMode: 'class' // necessário para que .dark funcione via classe
+    }
+  </script>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
-    <img class="w-30 h-20 mx-auto m-4" src="assets/image/ufficio-ret.png" alt="">
-    <h2 class="text-1xl text-green-800 mb-4 text-center"> </h2>
-    <input id="username" type="text" placeholder="Usuário" class="w-full border p-2 mb-4 rounded" />
+<body id="mainBody"
+  class="bg-gray-100 dark:bg-stone-950 text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center transition-colors duration-200">
+
+  <div class="absolute top-4 right-4 flex items-center gap-2">
+    <label class="text-gray-700 dark:text-gray-200 font-medium">Tema Escuro</label>
+    <label class="inline-flex items-center cursor-pointer">
+      <input type="checkbox" id="toggleDarkMode" class="sr-only" />
+      <div class="w-11 h-6 bg-gray-300 rounded-full shadow-inner relative transition-colors dark:bg-gray-600">
+        <div id="toggleDot"
+          class="absolute left-0.5 top-0.5 w-5 h-5 bg-white dark:bg-gray-200 rounded-full shadow transition-transform">
+        </div>
+      </div>
+    </label>
+  </div>
+  <div class="absolute bottom-2 right-4 flex items-center gap-2">
+    <a class="text-black-200 dark:text-gray-200 font-low" href="https://evoludesign.com.br/"> Desenvolvido por: <span
+        class="font-bold">Evolution Design</span> </a>
+  </div>
+
+
+  <div
+    class="bg-white dark:bg-stone-900  p-8 rounded shadow-md w-full max-w-sm text-gray-900 dark:text-gray-100 transition-colors duration-200 mx-4">
+    <img id="logo" class="w-50 h-30 mx-auto m-0" src="assets/image-conipa/logo-black.png" alt="Logo">
+
+    <h2 class="text-1xl text-green-800 dark:text-green-300 mb-4 text-center"></h2>
+
+    <input id="username" type="text" placeholder="Usuário"
+      class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
+
     <div class="relative mb-4">
-      <input id="password" type="password" placeholder="Senha" class="w-full border p-2 pr-10 rounded" />
+      <input id="password" type="password" placeholder="Senha"
+        class="w-full border p-2 pr-10 rounded bg-white dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
       <button type="button" onclick="togglePassword()"
-        class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600">
+        class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-300">
         <i id="eye-icon" class="fa-solid fa-eye"></i>
       </button>
     </div>
-    <button onclick="login()" class="w-full bg-green-600 hover:bg-blue-700 text-white py-2 rounded">
+
+    <button onclick="login()"
+      class="w-full bg-green-600 hover:bg-green-700 dark:hover:bg-green-500 text-white py-2 rounded transition">
       Entrar
     </button>
+
     <p id="error" class="text-red-500 text-sm mt-4 hidden">Usuário ou senha incorretos.</p>
-    <a href="#" class="text-blue-600 text-sm m-4 ">
-      <p>Esqueceu a senha?</p>
-    </a>
+    <div class="flex-row justify-start space-x-0 mt-2">
+      <a href="#" class="text-blue-600 dark:text-stone-50 text-sm">
+        <p>Esqueceu a senha?</p>
+      </a>
+      <a href="#" class="text-blue-600 dark:text-stone-50 text-sm">
+        <p>Cadastre-se</p>
+      </a>
+    </div>
+    
+
   </div>
 
   <script src="assets/js/login.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggle = document.getElementById("toggleDarkMode");
+      const body = document.getElementById("mainBody");
+      const dot = document.getElementById("toggleDot");
+      const html = document.documentElement;
+      const logo = document.getElementById("logo");
+
+      function setDarkMode(enabled) {
+        if (enabled) {
+          html.classList.add("dark");
+          toggle.checked = true;
+          dot.classList.add("translate-x-5");
+          logo.src = "assets/image-conipa/logo-white.png"; // sua logo branca
+          localStorage.setItem("theme", "dark");
+        } else {
+          html.classList.remove("dark");
+          toggle.checked = false;
+          dot.classList.remove("translate-x-5");
+          logo.src = "assets/image-conipa/logo-black.png"; // sua logo preta
+          localStorage.setItem("theme", "light");
+        }
+      }
+
+      const savedTheme = localStorage.getItem("theme");
+      setDarkMode(savedTheme === "dark");
+
+      toggle.addEventListener("change", () => {
+        setDarkMode(toggle.checked);
+      });
+
+      window.showSection = (id) => {
+        document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+      };
+      window.logoutUser = () => {
+        window.location.href = "index.html";
+      };
+
+      showSection("documentos");
+    });
+  </script>
 </body>
 
 </html>
