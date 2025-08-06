@@ -13,57 +13,33 @@ function togglePassword() {
   }
 }
 
-
-
 async function login() {
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("password").value;
   const error = document.getElementById("error");
 
   try {
-    // Faz login e pega o token
-    const response = await fetch("https://evoludesign.com.br/crm/wp-json/jwt-auth/v1/token", {
+    const response = await fetch("https://evoludesign.com.br/api-conipa/auth/login.php", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username: user,
-        password: pass
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, senha })
     });
 
     const data = await response.json();
     console.log("Login:", data);
 
     if (!response.ok) {
-      throw new Error(data.message || "Erro ao fazer login");
+      throw new Error(data.erro || "Erro ao fazer login");
     }
 
-    // Salva o token no localStorage
-    localStorage.setItem("token", data.token);
+    // Armazena os dados no localStorage (opcional)
+    localStorage.setItem("usuario", JSON.stringify(data.usuario));
 
-    // Agora busca o perfil do usuário para ver o papel dele
-    const perfilResponse = await fetch("https://evoludesign.com.br/crm/wp-json/crm/v1/meu-perfil", {
-      method: "GET",
-      headers: {
-        "Authorization": "Bearer " + data.token
-      }
-    });
-
-    const perfil = await perfilResponse.json();
-    console.log("Perfil:", perfil);
-
-    if (!perfilResponse.ok) {
-      throw new Error(perfil.message || "Erro ao buscar perfil");
-    }
-
-    // Redireciona com base no papel do usuário
-    if (perfil.role === "administrator") {
-      window.location.href = "dashboard.html";
-      localStorage.setItem("admin", perfil.role);
+    // Redireciona com base no tipo
+    if (data.usuario.tipo === "admin") {
+      window.location.href = "admindash.html";
     } else {
-      window.location.href = "perfil.html";
+      window.location.href = "requisicoes.html";
     }
 
   } catch (err) {

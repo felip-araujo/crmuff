@@ -16,105 +16,163 @@
 </head>
 
 <body id="mainBody"
-  
-class="bg-gradient-to-l from-gray-50 to-gray-300 dark:from-neutral-800 dark:to-stone-950 text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center transition-colors duration-200"></body>
+  class="bg-gradient-to-l from-gray-50 to-gray-300 dark:from-neutral-800 dark:to-stone-950 text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center transition-colors duration-200">
+</body>
 
 
-  <div class="absolute top-4 right-4 flex items-center gap-2">
-    <label class="text-gray-700 dark:text-gray-200 font-medium">Tema Escuro</label>
-    <label class="inline-flex items-center cursor-pointer">
-      <input type="checkbox" id="toggleDarkMode" class="sr-only" />
-      <div class="w-11 h-6 bg-gray-300 rounded-full shadow-inner relative transition-colors dark:bg-gray-600">
-        <div id="toggleDot"
-          class="absolute left-0.5 top-0.5 w-5 h-5 bg-white dark:bg-gray-200 rounded-full shadow transition-transform">
-        </div>
+<div class="absolute top-4 right-4 flex items-center gap-2">
+  <label class="text-gray-700 dark:text-gray-200 font-medium">Tema Escuro</label>
+  <label class="inline-flex items-center cursor-pointer">
+    <input type="checkbox" id="toggleDarkMode" class="sr-only" />
+    <div class="w-11 h-6 bg-gray-300 rounded-full shadow-inner relative transition-colors dark:bg-gray-600">
+      <div id="toggleDot"
+        class="absolute left-0.5 top-0.5 w-5 h-5 bg-white dark:bg-gray-200 rounded-full shadow transition-transform">
       </div>
-    </label>
-  </div>
-  <div class="absolute bottom-2 right-4 flex items-center gap-2">
-    <a class="text-black-200 dark:text-gray-200 font-low text-xs " href="https://evoludesign.com.br/"> Desenvolvido por: <span
-        class="font-bold ">Evolution Design</span> </a>
-  </div>
-
-
-  <div
-    class="bg-white dark:bg-stone-950 p-2 p-8 rounded shadow-md w-full max-w-sm text-gray-900 dark:text-gray-100 transition-colors duration-200 mx-4">
-    <img id="logo" class="w-50 h-30 mx-auto m-0" src="assets/image-conipa/logo-black.png" alt="Logo">
-
-
-    <input id="username" type="text" placeholder="Nome de Usuario"
-      class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
-
-    <div class="relative mb-4">
-      <input id="password" type="password" placeholder="Senha"
-        class="w-full border p-2 pr-10 rounded bg-white dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
-      <button type="button" onclick="togglePassword()"
-        class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-300">
-        <i id="eye-icon" class="fa-solid fa-eye"></i>
-      </button>
     </div>
+  </label>
+</div>
+<div class="absolute bottom-2 right-4 flex items-center gap-2">
+  <a class="text-black-200 dark:text-gray-200 font-low text-xs " href="https://evoludesign.com.br/"> Desenvolvido por:
+    <span class="font-bold ">Evolution Design</span> </a>
+</div>
 
-    <button onclick="login()"
-      class="w-full bg-emerald-700 text-white text-lm font-medium hover:bg-green-800 dark:bg-white dark:text-gray-800 py-2 rounded transition">
-      Entrar
+
+<div
+  class="bg-white dark:bg-stone-950 p-2 p-8 rounded shadow-md w-full max-w-sm text-gray-900 dark:text-gray-100 transition-colors duration-200 mx-4">
+  <img id="logo" class="w-50 h-30 mx-auto m-0" src="assets/image-conipa/logo-black.png" alt="Logo">
+
+
+  <input id="email" type="email" placeholder="Email"
+    class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
+
+  <div class="relative mb-4">
+    <input id="password" type="password" placeholder="Senha"
+      class="w-full border p-2 pr-10 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
+    <button type="button" onclick="togglePassword()"
+      class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-300">
+      <i id="eye-icon" class="fa-solid fa-eye"></i>
     </button>
-
-    <p id="error" class="text-red-500 text-sm mt-4 hidden">Usuário ou senha incorretos.</p>
-    <div class=" border-t border-gray-400 justify-start space-x-0 mt-6">
-      <a href="#" class="text-blue-600 dark:text-stone-300 text-sm">
-        <p class="mt-2">Esqueceu a senha?</p>
-      </a>
-      <a href="#" class="text-blue-600 dark:text-stone-300 text-sm">
-        <p>Cadastre-se</p>
-      </a>
-    </div>
-    
-
   </div>
 
-  <script src="assets/js/login.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const toggle = document.getElementById("toggleDarkMode");
-      const body = document.getElementById("mainBody");
-      const dot = document.getElementById("toggleDot");
-      const html = document.documentElement;
-      const logo = document.getElementById("logo");
+  <button onclick="login()"
+    class="w-full bg-emerald-700 text-white text-lm font-medium hover:bg-green-800 dark:bg-white dark:text-gray-800 py-2 rounded transition">
+    Entrar
+  </button>
 
-      function setDarkMode(enabled) {
-        if (enabled) {
-          html.classList.add("dark");
-          toggle.checked = true;
-          dot.classList.add("translate-x-5");
-          logo.src = "assets/image-conipa/logo-white.png"; // sua logo branca
-          localStorage.setItem("theme", "dark");
-        } else {
-          html.classList.remove("dark");
-          toggle.checked = false;
-          dot.classList.remove("translate-x-5");
-          logo.src = "assets/image-conipa/logo-black.png"; // sua logo preta
-          localStorage.setItem("theme", "light");
-        }
+  <p id="error" class="text-red-500 text-sm mt-4 hidden">Usuário ou senha incorretos.</p>
+  <div class=" border-t border-gray-400 justify-start space-x-0 mt-6">
+    <a href="#" class="text-gray-600 dark:text-stone-300 text-sm">
+      <p class="mt-2">Esqueceu a senha?</p>
+    </a>
+    <button command="show-modal" commandfor="dialog" class="text-gray-600 dark:text-stone-300 text-sm
+      ">Cadastre-se</button>
+  </div>
+
+  <!-- Include this script tag or install `@tailwindplus/elements` via npm: -->
+
+
+  <el-dialog>
+    <dialog id="dialog" aria-labelledby="dialog-title"
+      class="fixed inset-0 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
+      <el-dialog-backdrop
+        class="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"></el-dialog-backdrop>
+
+      <div tabindex="0"
+        class="flex min-h-full items-end justify-center p-4 text-center focus:outline-none sm:items-center sm:p-0">
+        <el-dialog-panel
+          class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div
+                class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon"
+                  aria-hidden="true" class="size-6 text-red-600">
+                  <path
+                    d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <h3 id="dialog-title" class="text-base font-semibold text-gray-900">Realize seu Pré-Cadastro
+
+                </h3>
+                <div class="mt-2">
+                  <p class="text-sm text-gray-500">Para iniciar o processo de pré-cadastro, por favor, preencha o
+                    formulário. Sua solicitação será avaliada por um administrador responsável.</p>
+                </div>
+                <div id="formulario-cadastro">
+                  <input id="nome" type="text" placeholder="Nome"
+                    class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white mt-4" />
+
+                  <select name="departamento" id="departamento" aria-placeholder="departamento"
+                    class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white">
+                    <option value="Almoxarifado">Almoxarifado</option>
+                    <option value="Pedras">Pedras</option>
+                    <option value="Almoxarifado">Controle de Qualidade </option>
+                  </select>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+            <button type="button" command="close" commandfor="dialog"
+              class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto">Deactivate</button>
+            <button type="button" command="close" commandfor="dialog"
+              class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+          </div>
+        </el-dialog-panel>
+      </div>
+    </dialog>
+  </el-dialog>
+
+
+
+</div>
+
+<script src="assets/js/login.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.getElementById("toggleDarkMode");
+    const body = document.getElementById("mainBody");
+    const dot = document.getElementById("toggleDot");
+    const html = document.documentElement;
+    const logo = document.getElementById("logo");
+
+    function setDarkMode(enabled) {
+      if (enabled) {
+        html.classList.add("dark");
+        toggle.checked = true;
+        dot.classList.add("translate-x-5");
+        logo.src = "assets/image-conipa/logo-white.png"; // sua logo branca
+        localStorage.setItem("theme", "dark");
+      } else {
+        html.classList.remove("dark");
+        toggle.checked = false;
+        dot.classList.remove("translate-x-5");
+        logo.src = "assets/image-conipa/logo-black.png"; // sua logo preta
+        localStorage.setItem("theme", "light");
       }
+    }
 
-      const savedTheme = localStorage.getItem("theme");
-      setDarkMode(savedTheme === "dark");
+    const savedTheme = localStorage.getItem("theme");
+    setDarkMode(savedTheme === "dark");
 
-      toggle.addEventListener("change", () => {
-        setDarkMode(toggle.checked);
-      });
-
-      window.showSection = (id) => {
-        document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-      };
-      window.logoutUser = () => {
-        window.location.href = "index.html";
-      };
-
-      showSection("documentos");
+    toggle.addEventListener("change", () => {
+      setDarkMode(toggle.checked);
     });
-  </script>
+
+    window.showSection = (id) => {
+      document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    };
+    window.logoutUser = () => {
+      window.location.href = "index.html";
+    };
+
+    showSection("documentos");
+  });
+</script>
 </body>
 
 </html>
