@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="transition-colors duration-300">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema Integrado - Conipa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+        };
+    </script>
+</head>
+
+<body id="mainBody"
+    class="bg-gradient-to-l from-gray-50 to-gray-300 dark:from-neutral-800 dark:to-stone-950 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200">
+    <!-- TOGGLE DARK MODE -->
+    <div class="absolute top-4 right-4 flex items-center gap-2">
+        <label class="text-gray-700 dark:text-gray-200 font-medium">Tema Escuro</label>
+        <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="toggleDarkMode" class="sr-only" />
+            <div class="w-11 h-6 bg-gray-300 rounded-full shadow-inner relative transition-colors dark:bg-gray-600">
+                <div id="toggleDot"
+                    class="absolute left-0.5 top-0.5 w-5 h-5 bg-white dark:bg-gray-200 rounded-full shadow transition-transform">
+                </div>
+            </div>
+        </label>
+        <a class="" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+    </div>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <main class="p-6 flex flex gap-6">
+        <div class="flex justify-start">
+            <button onclick="abrirModal()"
+                class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-lm mx-4">
+                Ver todas as requisições
+            </button>
+            <button onclick="abrirModalPendentes()" class="bg-yellow-500 text-white px-4 py-2 rounded mx-4">Ver Pendentes</button>
+        </div>
+    </main>
+    <section>
+
+    </section>
+
+    <!-- MODAL -->
+    <dialog id="modalRequisicao"
+        class="fixed inset-0 z-50 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
+        <!-- FUNDO -->
+        <div onclick="fecharModal()" class="fixed inset-0 bg-gray-500/75 transition-opacity backdrop-blur-sm"></div>
+
+        <!-- CONTEÚDO DO MODAL -->
+        <div tabindex="0" class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div
+                class="relative z-10 transform overflow-hidden rounded-lg bg-white dark:bg-stone-950 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+                <div class="bg-white dark:bg-stone-950 px-6 pt-6 pb-6 sm:p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100"></h3>
+                        Todas as Requisições
+                        </h3>
+                        <button onclick="fecharModal()"
+                            class="text-gray-500 hover:text-red-600 text-xl">&times;</button>
+                    </div>
+
+                    <!-- TABELA -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                            <thead class="bg-gray-100 dark:bg-gray-800">
+                                <tr>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        ID</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Nome</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Setor</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        RE</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Status</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Criado em</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Itens</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaRequisicoes"
+                                class="bg-white dark:bg-stone-950 divide-y divide-gray-200 dark:divide-gray-800 text-gray-800 dark:text-gray-100">
+                                <!-- Linhas dinâmicas aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+
+    <!-- RODAPÉ -->
+    <div class="absolute bottom-2 right-4 flex items-center gap-2">
+        <a class="text-black-200 dark:text-gray-200 font-low text-xs" href="https://evoludesign.com.br/">
+            Desenvolvido por: <span class="font-bold">Evolution Design</span>
+        </a>
+    </div>
+    <script src="/assets/js/admin-dash.js"></script>
+    <!-- JS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toggle = document.getElementById("toggleDarkMode");
+            const html = document.documentElement;
+            const dot = document.getElementById("toggleDot");
+
+            function setDarkMode(enabled) {
+                if (enabled) {
+                    html.classList.add("dark");
+                    toggle.checked = true;
+                    dot.classList.add("translate-x-5");
+                    localStorage.setItem("theme", "dark");
+                } else {
+                    html.classList.remove("dark");
+                    toggle.checked = false;
+                    dot.classList.remove("translate-x-5");
+                    localStorage.setItem("theme", "light");
+                }
+            }
+
+            const savedTheme = localStorage.getItem("theme");
+            setDarkMode(savedTheme === "dark");
+
+            toggle.addEventListener("change", () => {
+                setDarkMode(toggle.checked);
+            });
+        });
+
+
+        function fecharModal() {
+            const modal = document.getElementById("modalRequisicao");
+            if (typeof modal.close === "function") {
+                modal.close();
+            } else {
+                modal.classList.add("hidden");
+            }
+        }
+
+
+        function adicionarItem() {
+            // Função para adicionar itens dinamicamente
+            const lista = document.getElementById("listaItens");
+            const cod = document.getElementById("codigo_material").value;
+            const qtd = document.getElementById("quantidade_item").value;
+            if (cod && qtd) {
+                const p = document.createElement("p");
+                p.textContent = `Código: ${cod}, Quantidade: ${qtd}`;
+                lista.appendChild(p);
+            }
+        }
+
+        function enviarRequisicao() {
+            const msg = document.getElementById("mensagem");
+            msg.classList.remove("hidden");
+            msg.textContent = "Requisição enviada com sucesso!";
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>

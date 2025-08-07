@@ -40,7 +40,7 @@
         </div>
     </main>
     <section>
-      
+
     </section>
 
     <!-- MODAL -->
@@ -107,9 +107,12 @@
         </a>
     </div>
 
+
     <!-- JS -->
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // 🌙 Dark Mode
             const toggle = document.getElementById("toggleDarkMode");
             const html = document.documentElement;
             const dot = document.getElementById("toggleDot");
@@ -134,31 +137,95 @@
             toggle.addEventListener("change", () => {
                 setDarkMode(toggle.checked);
             });
+
+            // 🔍 Buscar material ao perder foco do input
+            const input = document.getElementById("codigo_material");
+
+            if (input) {
+                input.addEventListener("blur", async function () {
+                    const codigo = input.value.trim();
+                    if (!codigo) {
+                        limparInfoMaterial();
+                        return;
+                    }
+
+                    const info = await buscarMaterialPorCodigo(codigo);
+                    console.log("🔍 Resposta da API:", info);
+
+                    if (info?.success && Array.isArray(info.material) && info.material.length > 0) {
+                        const material = info.material[0];
+                        mostrarInfoMaterial(material);
+                    } else {
+                        limparInfoMaterial();
+                        alert("Material não encontrado para o código informado.");
+                    }
+                });
+            } else {
+                console.warn("⚠️ Campo #codigo_material não encontrado");
+            }
+
+            // 📦 Adicionar item à lista
+            document.getElementById("btnAdicionarItem")?.addEventListener("click", adicionarItem);
+
+            // 🚀 Enviar requisição
+            document.getElementById("btnEnviarRequisicao")?.addEventListener("click", enviarRequisicao);
+
+            // 🎯 Abrir e fechar modal
+            document.getElementById("btnAbrirModal")?.addEventListener("click", abrirModal);
+            document.getElementById("btnFecharModal")?.addEventListener("click", fecharModal);
         });
 
-        function abrirModal() {
-            const modal = document.getElementById("modalRequisicao");
-            if (typeof modal.showModal === "function") {
-                modal.showModal();
-            } else {
-                // fallback se o navegador não suportar <dialog>
-                modal.classList.remove("hidden");
+        // 🧠 Buscar material via API
+        async function buscarMaterialPorCodigo(codigo) {
+            if (!codigo) return null;
+
+            try {
+                const response = await fetch("https://evoludesign.com.br/api-conipa/material/material-por-id.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ codigo })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Erro na resposta da API");
+                }
+
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error("Erro ao buscar material:", error);
+                return null;
             }
         }
 
+        // 💬 Mostrar info do material corretamente
+        function mostrarInfoMaterial(material) {
+            let divInfo = document.getElementById("infoMaterial");
 
-        function fecharModal() {
-            const modal = document.getElementById("modalRequisicao");
-            if (typeof modal.close === "function") {
-                modal.close();
-            } else {
-                modal.classList.add("hidden");
+            if (!divInfo) {
+                divInfo = document.createElement("div");
+                divInfo.id = "infoMaterial";
+                divInfo.className = "mt-1 text-sm text-green-600 dark:text-green-400";
+                document.getElementById("codigo_material").insertAdjacentElement("afterend", divInfo);
             }
+
+            divInfo.innerHTML = `
+                <strong>Material:</strong> ${material.descricao || '---'}<br>
+                <strong>Grupo:</strong> ${material.grupo || '---'}<br>
+                <strong>Código:</strong> ${material.codigo || '---'}
+            `;
         }
 
+        // 🧼 Limpar info do material
+        function limparInfoMaterial() {
+            const divInfo = document.getElementById("infoMaterial");
+            if (divInfo) divInfo.remove();
+        }
 
+        // ➕ Adicionar item
         function adicionarItem() {
-            // Função para adicionar itens dinamicamente
             const lista = document.getElementById("listaItens");
             const cod = document.getElementById("codigo_material").value;
             const qtd = document.getElementById("quantidade_item").value;
@@ -169,12 +236,36 @@
             }
         }
 
+        // ✅ Enviar requisição
         function enviarRequisicao() {
             const msg = document.getElementById("mensagem");
             msg.classList.remove("hidden");
             msg.textContent = "Requisição enviada com sucesso!";
         }
+
+        // 📦 Modal
+        function abrirModal() {
+            const modal = document.getElementById("modalRequisicao");
+            if (typeof modal.showModal === "function") {
+                modal.showModal();
+            } else {
+                modal.classList.remove("hidden");
+            }
+        }
+
+        function fecharModal() {
+            const modal = document.getElementById("modalRequisicao");
+            if (typeof modal.close === "function") {
+                modal.close();
+            } else {
+                modal.classList.add("hidden");
+            }
+        }
     </script>
+
+
+
+
 </body>
 
 </html>
