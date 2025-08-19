@@ -1,94 +1,298 @@
 
-  const itensAdicionados = [];
+let itensRequisicao = [];
 
-  function adicionarItem() {
-    const codigo = document.getElementById("codigo_material").value.trim();
-    const quantidade = parseInt(document.getElementById("quantidade_item").value);
 
-    if (!codigo || !quantidade || quantidade <= 0) {
-      alert("Preencha corretamente o código do material e a quantidade.");
-      return;
+document.addEventListener("DOMContentLoaded", () => {
+  // 🌙 Dark Mode
+  const toggle = document.getElementById("toggleDarkMode");
+  const html = document.documentElement;
+  const dot = document.getElementById("toggleDot");
+
+  function setDarkMode(enabled) {
+    if (enabled) {
+      html.classList.add("dark");
+      toggle.checked = true;
+      dot.classList.add("translate-x-5");
+      localStorage.setItem("theme", "dark");
+    } else {
+      html.classList.remove("dark");
+      toggle.checked = false;
+      dot.classList.remove("translate-x-5");
+      localStorage.setItem("theme", "light");
     }
-
-    itensAdicionados.push({ codigo_material: codigo, quantidade });
-    document.getElementById("codigo_material").value = "";
-    document.getElementById("quantidade_item").value = "";
-
-    renderizarListaItens();
   }
 
-  function renderizarListaItens() {
-    const lista = document.getElementById("listaItens");
-    if (itensAdicionados.length === 0) {
-      lista.innerHTML = `<p class="text-sm text-gray-600 dark:text-gray-400 italic">Nenhum item adicionado ainda.</p>`;
-      return;
-    }
+  const savedTheme = localStorage.getItem("theme");
+  setDarkMode(savedTheme === "dark");
 
-    lista.innerHTML = `
-      <h4 class="font-medium mb-2">Itens Adicionados:</h4>
-      <ul class="list-disc pl-5 space-y-1">
-        ${itensAdicionados.map(item => `
-          <li>${item.codigo_material} — <span class="font-semibold">${item.quantidade}</span> un.</li>
-        `).join('')}
-      </ul>
-    `;
-  }
+  toggle.addEventListener("change", () => {
+    setDarkMode(toggle.checked);
+  });
 
-  async function enviarRequisicao() {
-    const setor = document.getElementById("setor").value.trim();
-    const re = document.getElementById("re").value.trim();
-    const nome = document.getElementById("nome").value.trim();
-    const mensagem = document.getElementById("mensagem");
+  // 🔍 Buscar material ao perder foco do input
+  const input = document.getElementById("codigo_material");
 
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
-    if (!usuario || !usuario.id) {
-      alert("Usuário não autenticado.");
-      return;
-    }
-
-    if (!setor || !re || !nome || itensAdicionados.length === 0) {
-      alert("Preencha todos os campos e adicione pelo menos um item.");
-      return;
-    }
-
-    const dados = {
-      id_usuario: usuario.id,
-      setor,
-      re,
-      nome,
-      itens: itensAdicionados
-    };
-
-    try {
-      const response = await fetch("https://evoludesign.com.br/api-conipa/requisicoes/criar.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dados)
-      });
-
-      const resultado = await response.json();
-
-      if (!response.ok) {
-        throw new Error(resultado.erro || "Erro ao enviar requisição.");
+  if (input) {
+    input.addEventListener("blur", async function () {
+      const codigo = input.value.trim();
+      if (!codigo) {
+        limparInfoMaterial();
+        return;
       }
 
-      mensagem.classList.remove("hidden", "text-red-500");
-      mensagem.classList.add("text-green-600");
-      mensagem.textContent = resultado.mensagem;
+      const info = await buscarMaterialPorCodigo(codigo);
+      console.log("🔍 Resposta da API:", info);
 
-      // Limpa tudo
-      document.getElementById("setor").value = "";
-      document.getElementById("re").value = "";
-      document.getElementById("nome").value = "";
-      itensAdicionados.length = 0;
-      renderizarListaItens();
-
-    } catch (error) {
-      mensagem.classList.remove("hidden", "text-green-600");
-      mensagem.classList.add("text-red-500");
-      mensagem.textContent = error.message;
-    }
+      if (info?.success && Array.isArray(info.material) && info.material.length > 0) {
+        const material = info.material[0];
+        mostrarInfoMaterial(material);
+      } else {
+        limparInfoMaterial();
+        alert("Material não encontrado para o código informado.");
+      }
+    });
+  } else {
+    console.warn("⚠️ Campo #codigo_material não encontrado");
   }
+
+  // 📦 Adicionar item à lista
+  document.getElementById("btnAdicionarItem")?.addEventListener("click", adicionarItem);
+
+  // 🚀 Enviar requisição
+  document.getElementById("btnEnviarRequisicao")?.addEventListener("click", enviarRequisicao);
+
+  // 🎯 Abrir e fechar modal
+  document.getElementById("btnAbrirModal")?.addEventListener("click", abrirModal);
+  document.getElementById("btnFecharModal")?.addEventListener("click", fecharModal);
+});
+
+// 🧠 Buscar material via API
+async function buscarMaterialPorCodigo(codigo) {
+  if (!codigo) return null;
+
+  try {
+    const response = await fetch("https://evoludesign.com.br/api-conipa/material/material-por-id.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ codigo })
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro na resposta da API");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erro ao buscar material:", error);
+    return null;
+  }
+}
+
+// 💬 Mostrar info do material corretamente
+function mostrarInfoMaterial(material) {
+  let divInfo = document.getElementById("infoMaterial");
+
+  if (!divInfo) {
+    divInfo = document.createElement("div");
+    divInfo.id = "infoMaterial";
+    divInfo.className = "mt-1 text-sm text-green-600 dark:text-green-400";
+    document.getElementById("codigo_material").insertAdjacentElement("afterend", divInfo);
+  }
+
+  divInfo.innerHTML = `
+                <strong>Material:</strong> ${material.descricao || '---'}<br>
+                <strong>Grupo:</strong> ${material.grupo || '---'}<br>
+                <strong>Código:</strong> ${material.codigo || '---'}
+            `;
+}
+
+// 🧼 Limpar info do material
+function limparInfoMaterial() {
+  const divInfo = document.getElementById("infoMaterial");
+  if (divInfo) divInfo.remove();
+}
+
+// ➕ Adicionar item
+function adicionarItem() {
+  const lista = document.getElementById("listaItens");
+  const cod = document.getElementById("codigo_material").value;
+  const qtd = document.getElementById("quantidade_item").value;
+
+  if (cod && qtd) {
+    // Adiciona no array de itens
+    itensRequisicao.push({
+      codigo_material: cod,
+      quantidade: parseInt(qtd, 10)
+    });
+
+    // Exibe na lista visual
+    const p = document.createElement("p");
+    p.textContent = `Código: ${cod}, Quantidade: ${qtd}`;
+    lista.appendChild(p);
+
+    // Limpar inputs
+    document.getElementById("codigo_material").value = "";
+    document.getElementById("quantidade_item").value = "";
+    limparInfoMaterial();
+  }
+}
+
+async function enviarRequisicao() {
+  const sucesso = document.getElementById("sucesso");
+  const erro = document.getElementById("erro");
+  const listaItens = document.getElementById("listaItens");
+
+  // Limpar mensagens
+  sucesso.classList.add("hidden");
+  erro.classList.add("hidden");
+  sucesso.textContent = "";
+  erro.textContent = "";
+
+  // Recuperar dados do usuário do localStorage
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  if (!usuario || !usuario.id) {
+    erro.textContent = "Usuário não autenticado.";
+    erro.classList.remove("hidden");
+    return;
+  }
+
+  // Captura os itens adicionados
+  const itens = [];
+  listaItens.querySelectorAll("p").forEach(p => {
+    const texto = p.textContent; // "Código: 12345, Quantidade: 10"
+    const match = texto.match(/Código:\s*(\S+),\s*Quantidade:\s*(\d+)/);
+    if (match) {
+      itens.push({
+        codigo_material: match[1],
+        quantidade: parseInt(match[2], 10)
+      });
+    }
+  });
+
+  if (itens.length === 0) {
+    erro.textContent = "Adicione pelo menos um item antes de enviar.";
+    erro.classList.remove("hidden");
+    return;
+  }
+
+  try {
+    const body = {
+      id_usuario: usuario.id,
+      nome: usuario.nome,
+      re: usuario.re,
+      setor: usuario.setor,
+      itens
+    };
+
+    const response = await fetch("https://evoludesign.com.br/api-conipa/requisicoes/criar.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || data.erro) {
+      erro.textContent = data.erro || "Erro ao enviar a requisição.";
+      erro.classList.remove("hidden");
+    } else {
+      sucesso.textContent = data.mensagem || "Requisição enviada com sucesso!";
+      sucesso.classList.remove("hidden");
+
+      // Limpar lista de itens e inputs
+      listaItens.innerHTML = "";
+      document.getElementById("codigo_material").value = "";
+      document.getElementById("quantidade_item").value = "";
+      limparInfoMaterial();
+    }
+
+  } catch (e) {
+    console.error("Erro ao enviar requisição:", e);
+    erro.textContent = "Erro ao enviar requisição. Tente novamente.";
+    erro.classList.remove("hidden");
+  }
+}
+
+
+// 📦 Modal
+function abrirModal() {
+  const modal = document.getElementById("modalRequisicao");
+  if (typeof modal.showModal === "function") {
+    modal.showModal();
+  } else {
+    modal.classList.remove("hidden");
+  }
+}
+
+function fecharModal() {
+  const modal = document.getElementById("modalRequisicao");
+  if (typeof modal.close === "function") {
+    modal.close();
+  } else {
+    modal.classList.add("hidden");
+  }
+}
+
+async function minhasRequisicoes() {
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const container = document.getElementById("minhasRequisicoes");
+  container.innerHTML = `<p class="italic text-gray-500 dark:text-gray-400">Carregando...</p>`;
+
+  if (!usuario || !usuario.id) {
+    container.innerHTML = `<p class="text-red-500">Usuário não autenticado.</p>`;
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://evoludesign.com.br/api-conipa/requisicoes/minhas-requisicoes.php?id_usuario=${usuario.id}`);
+    const data = await response.json();
+
+    if (!response.ok || data.erro) {
+      container.innerHTML = `<p class="text-red-500">${data.erro || "Erro ao buscar requisições."}</p>`;
+      return;
+    }
+
+    if (!data.requisicoes || data.requisicoes.length === 0) {
+      container.innerHTML = `<p class="italic text-gray-500 dark:text-gray-400">Nenhuma requisição encontrada.</p>`;
+      return;
+    }
+
+    // Monta a tabela com Tailwind
+    let html = `
+      <table class="min-w-full border border-gray-300 dark:border-gray-700 rounded overflow-hidden mt-4">
+        <thead class="bg-gray-200 dark:bg-gray-800">
+          <tr>
+          <th class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Itens</th>
+            <th class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Data</th>
+            <th class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-900">
+    `;
+
+    data.requisicoes.forEach(req => {
+      const itens = req.itens.map(i => `${i.codigo_material} (${i.quantidade})`).join(", ");
+      html += `
+        <tr class="hover:bg-gray-100 dark:hover:bg-gray-800">
+        <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700">${itens}</td>
+          <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700">${req.criado_em}</td>
+          <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 capitalize">${req.status}</td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+
+  } catch (e) {
+    console.error(e);
+    container.innerHTML = `<p class="text-red-500">Erro ao buscar requisições.</p>`;
+  }
+}
+
+// Chama a função ao carregar a página
+document.addEventListener("DOMContentLoaded", minhasRequisicoes);
 

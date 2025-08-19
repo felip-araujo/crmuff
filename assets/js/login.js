@@ -34,6 +34,8 @@ async function login() {
 
     // Armazena os dados no localStorage (opcional)
     localStorage.setItem("usuario", JSON.stringify(data.usuario));
+    window.location.href = "requisicoes.html"; // pode ser na Vercel
+
 
     // Redireciona com base no tipo
     if (data.usuario.tipo === "admin") {
