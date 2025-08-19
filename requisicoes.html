@@ -39,72 +39,71 @@
             </button>
         </div>
     </main>
+    <section>
 
-    <div id="minhasRequisicoes" class="overflow-x-auto mt-4">
-        <!-- Aqui a tabela será injetada pelo JS -->
-        <p class="italic text-gray-500 dark:text-gray-400">Carregando requisições...</p>
-        <section>
+        <div id="minhasRequisicoes" class="p-6 flex flex gap-6">
+            <!-- Aqui a tabela será injetada pelo JS -->
+            <p class="italic text-gray-500 dark:text-gray-400">Carregando requisições...</p>
+    </section>
 
-        </section>
+    <!-- MODAL -->
+    <dialog id="modalRequisicao"
+        class="fixed inset-0 z-50 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
+        <!-- FUNDO -->
+        <div onclick="fecharModal()" class="fixed inset-0 bg-gray-500/75 transition-opacity backdrop-blur-sm"></div>
 
-        <!-- MODAL -->
-        <dialog id="modalRequisicao"
-            class="fixed inset-0 z-50 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
-            <!-- FUNDO -->
-            <div onclick="fecharModal()" class="fixed inset-0 bg-gray-500/75 transition-opacity backdrop-blur-sm"></div>
-
-            <!-- CONTEÚDO DO MODAL -->
-            <div tabindex="0" class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-                <div
-                    class="relative z-10 transform overflow-hidden rounded-lg bg-white dark:bg-stone-950 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                    <div class="bg-white dark:bg-stone-950 px-6 pt-6 pb-6 sm:p-6">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                Nova Requisição
-                            </h3>
-                            <button onclick="fecharModal()"
-                                class="text-gray-500 hover:text-red-600 text-xl">&times;</button>
-                        </div>
-
-                        <hr class="my-4 border-gray-300 dark:border-gray-700" />
-
-                        <!-- Itens -->
-                        <h4 class="font-semibold text-sm mb-2">Adicionar Item</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <input type="text" id="codigo_material" placeholder="Código do Material"
-                                class="w-full border p-2 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 text-gray-900 dark:text-white" />
-                            <input type="number" id="quantidade_item" placeholder="Quantidade"
-                                class="w-full border p-2 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 text-gray-900 dark:text-white" />
-                        </div>
-                        <button onclick="adicionarItem()"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition text-sm mb-4">
-                            Adicionar Item
-                        </button>
-
-                        <div id="listaItens" class="text-sm text-gray-600 dark:text-gray-400 italic">
-                            Nenhum item adicionado ainda.
-                        </div>
-
-                        <button onclick="enviarRequisicao()"
-                            class="mt-6 w-full bg-green-700 hover:bg-green-800 text-white dark:bg-white dark:text-black px-4 py-2 rounded transition text-sm">
-                            Enviar Requisição
-                        </button>
-                        <p id="sucesso" class="mt-2 text-sm hidden"></p>
-                        <p id="erro" class="mt-2 text-sm hidden"></p>
+        <!-- CONTEÚDO DO MODAL -->
+        <div tabindex="0" class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div
+                class="relative z-10 transform overflow-hidden rounded-lg bg-white dark:bg-stone-950 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div class="bg-white dark:bg-stone-950 px-6 pt-6 pb-6 sm:p-6">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                            Nova Requisição
+                        </h3>
+                        <button onclick="fecharModal()"
+                            class="text-gray-500 hover:text-red-600 text-xl">&times;</button>
                     </div>
+
+                    <hr class="my-4 border-gray-300 dark:border-gray-700" />
+
+                    <!-- Itens -->
+                    <h4 class="font-semibold text-sm mb-2">Adicionar Item</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <input type="text" id="codigo_material" placeholder="Código do Material"
+                            class="w-full border p-2 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 text-gray-900 dark:text-white" />
+                        <input type="number" id="quantidade_item" placeholder="Quantidade"
+                            class="w-full border p-2 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 text-gray-900 dark:text-white" />
+                    </div>
+                    <button onclick="adicionarItem()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition text-sm mb-4">
+                        Adicionar Item
+                    </button>
+
+                    <div id="listaItens" class="text-sm text-gray-600 dark:text-gray-400 italic">
+                        Nenhum item adicionado ainda.
+                    </div>
+
+                    <button onclick="enviarRequisicao()"
+                        class="mt-6 w-full bg-green-700 hover:bg-green-800 text-white dark:bg-white dark:text-black px-4 py-2 rounded transition text-sm">
+                        Enviar Requisição
+                    </button>
+                    <p id="sucesso" class="mt-2 text-sm hidden"></p>
+                    <p id="erro" class="mt-2 text-sm hidden"></p>
                 </div>
             </div>
-        </dialog>
-
-        <!-- RODAPÉ -->
-        <div class="absolute bottom-2 right-4 flex items-center gap-2">
-            <a class="text-black-200 dark:text-gray-200 font-low text-xs" href="https://evoludesign.com.br/">
-                Desenvolvido por: <span class="font-bold">Evolution Design</span>
-            </a>
         </div>
+    </dialog>
 
-        <script src="assets/js/requisicoes.js"></script>
-        <!-- JS -->
+    <!-- RODAPÉ -->
+    <div class="absolute bottom-2 right-4 flex items-center gap-2">
+        <a class="text-black-200 dark:text-gray-200 font-low text-xs" href="https://evoludesign.com.br/">
+            Desenvolvido por: <span class="font-bold">Evolution Design</span>
+        </a>
+    </div>
+
+    <script src="assets/js/requisicoes.js"></script>
+    <!-- JS -->
 
 </body>
 
