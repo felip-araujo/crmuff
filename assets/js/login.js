@@ -52,7 +52,7 @@ async function login() {
 async function preCadastro() {
   const nome = document.getElementById("nome").value;
   const email = document.getElementById("e-mail").value;
-  const departamento = document.getElementById("departamento").value;
+  const setor = document.getElementById("setor").value;
   const re = document.getElementById("re").value;
   const senha1 = document.getElementById("senha1").value;
   const senha2 = document.getElementById("senha-confirm").value;
@@ -77,7 +77,7 @@ async function preCadastro() {
     const response = await fetch("https://evoludesign.com.br/api-conipa/auth/pre-cadastro.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nome, email, departamento, re, senha: senha2 })
+      body: JSON.stringify({ nome, email, setor, re, senha: senha2 })
     });
 
     if (!response.ok) {
@@ -92,3 +92,40 @@ async function preCadastro() {
 
 }
 
+async function trocarSenha() {
+  const sucesso = document.getElementById("sucesso");
+  const erro = document.getElementById("erro");
+  const re = document.getElementById("RE").value;
+  const nova_senha = document.getElementById("nova_senha").value;
+
+  // Regex para senha forte
+  const regexSenhaForte = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+  if (!regexSenhaForte.test(nova_senha)) {
+    erro.textContent = "A senha deve ter no mínimo 8 caracteres, incluindo maiúsculas, minúsculas, números e símbolos.";
+    erro.classList.remove("hidden");
+    return;
+  }
+
+  try {
+    const response = await fetch("https://evoludesign.com.br/api-conipa/auth/recuperar-senha.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ "re": re, "nova_senha": nova_senha })
+    });
+
+    if (!response.ok) {
+      erro.textContent = "Erro ao alterar a senha.";
+      erro.classList.remove("hidden");
+      return;
+    }
+
+    sucesso.textContent = "Senha alterada com sucesso!";
+    sucesso.classList.remove("hidden");
+    erro.classList.add("hidden");
+
+  } catch (e) {
+    erro.textContent = "Ocorreu um erro inesperado.";
+    erro.classList.remove("hidden");
+  }
+}

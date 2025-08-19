@@ -107,7 +107,7 @@
                 <input type="email" id="e-mail" placeholder="Email"
                   class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
 
-                <select name="departamento" id="departamento" aria-placeholder="departamento"
+                <select name="setor" id="setor" aria-placeholder="departamento"
                   class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white">
                   <option value="Almoxarifado">Almoxarifado</option>
                   <option value="Pedras">Pedras</option>
@@ -164,25 +164,25 @@
 
               </h3>
               <div class="mt-2">
-                <p class="text-sm text-gray-500">Digite o email cadastrado.</p>
+                <p class="text-sm text-gray-500">Digite o seu RE.</p>
               </div>
               <div id="formulario-cadastro">
-                <input id="nome" type="text" placeholder="Nome"
-                  class=" hidden w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white mt-4" />
+                <input type="text" id="RE" placeholder="RE"
+                  class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white mt-4" />
 
-                <input type="email" id="e-mail" placeholder="Email"
+                <input type="text" id="nova_senha" placeholder="Nova Senha"
                   class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
 
               </div>
-              <p id="errorModal" class="text-red-500 text-sm hidden">Usuário ou senha incorretos.</p>
-              <p id="sucessModal" class="text-green-500 text-sm hidden">Realizado.</p>
+              <p id="erro" class="text-red-500 text-sm hidden">Usuário ou senha incorretos.</p>
+              <p id="sucesso" class="text-green-500 text-sm hidden">Realizado.</p>
             </div>
           </div>
         </div>
         <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
           <button type="button" command="close" commandfor="dialog-esqueci-senha"
             class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto">Cancelar</button>
-          <button type="button" onclick="" commandfor="dialog"
+          <button type="button" onclick="trocarSenha()" commandfor="dialog"
             class="mt-3 inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-green-400 sm:mt-0 sm:w-auto">Enviar</button>
         </div>
       </el-dialog-panel>
@@ -234,7 +234,7 @@
       window.location.href = "index.html";
     };
 
-    showSection("documentos");
+
   });
 </script>
 </body>
