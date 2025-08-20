@@ -14,7 +14,7 @@ function togglePassword() {
 }
 
 async function login() {
-  const email = document.getElementById("email").value;
+  const re = document.getElementById("re").value;
   const senha = document.getElementById("password").value;
   const error = document.getElementById("error");
 
@@ -22,7 +22,7 @@ async function login() {
     const response = await fetch("https://evoludesign.com.br/api-conipa/auth/login.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, senha })
+      body: JSON.stringify({ re, senha })
     });
 
     const data = await response.json();
