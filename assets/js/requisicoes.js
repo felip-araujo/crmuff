@@ -260,31 +260,50 @@ async function minhasRequisicoes() {
       return;
     }
 
-    // Monta a tabela com Tailwind
+    // Modal fullscreen com blur no fundo
     let html = `
-      <table class="min-w-full border border-gray-300 dark:border-gray-700 rounded overflow-hidden mt-4">
-        <thead class="bg-gray-200 dark:bg-gray-800">
-          <tr>
-          <th class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Itens</th>
-            <th class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Data</th>
-            <th class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Status</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white dark:bg-gray-900">
+      <div class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-900 w-11/12 h-5/6 rounded-lg shadow-lg relative overflow-auto">
+          
+          <!-- Botão de fechar -->
+          <button 
+            class="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded shadow hover:bg-red-700 transition text-sm" 
+            onclick="fecharHistorico()">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+
+          <!-- Tabela -->
+          <table class="min-w-full border border-gray-300 dark:border-gray-700 rounded overflow-hidden mt-14">
+            <thead class="bg-gray-200 dark:bg-gray-800 sticky top-0">
+              <tr>
+                <th class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Itens</th>
+                <th class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Data</th>
+                <th class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Status</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-900">
     `;
 
+    // Popula as linhas
     data.requisicoes.forEach(req => {
       const itens = req.itens.map(i => `${i.codigo_material} (${i.quantidade})`).join(", ");
       html += `
         <tr class="hover:bg-gray-100 dark:hover:bg-gray-800">
-        <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700">${itens}</td>
+          <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700">${itens}</td>
           <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700">${req.criado_em}</td>
           <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 capitalize">${req.status}</td>
         </tr>
       `;
     });
 
-    html += `</tbody></table>`;
+    // Fecha tabela e modal
+    html += `
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+
     container.innerHTML = html;
 
   } catch (e) {
@@ -293,6 +312,68 @@ async function minhasRequisicoes() {
   }
 }
 
-// Chama a função ao carregar a página
 document.addEventListener("DOMContentLoaded", minhasRequisicoes);
 
+
+
+// Função para mostrar apenas requisições pendentes
+async function carregarRequisicoesPendentes() {
+  document.getElementById("requisicoesPendentes").classList.remove("hidden");
+  document.getElementById("minhasRequisicoes").classList.add("hidden");
+
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const container = document.getElementById("requisicoesPendentes");
+  container.innerHTML = `<p class="italic text-gray-500 dark:text-gray-400">Carregando requisições pendentes...</p>`;
+
+  try {
+      const response = await fetch(`https://evoludesign.com.br/api-conipa/requisicoes/minhas-pendentes.php?${usuario.id}`); // ajuste a rota
+      const requisicoes = await response.json();
+
+      if (!requisicoes.length) {
+          container.innerHTML = `<p class="italic text-gray-500 dark:text-gray-400">Nenhuma requisição pendente.</p>`;
+          return;
+      }
+
+      let table = `
+          <table class="w-full border-collapse border border-gray-300">
+              <thead>
+                  <tr class="bg-gray-100">
+                      <th class="border border-gray-300 px-4 py-2">ID</th>
+                      <th class="border border-gray-300 px-4 py-2">Descrição</th>
+                      <th class="border border-gray-300 px-4 py-2">Status</th>
+                      <th class="border border-gray-300 px-4 py-2">Data</th>
+                  </tr>
+              </thead>
+              <tbody>
+      `;
+
+      requisicoes.forEach(r => {
+          table += `
+              <tr>
+                  <td class="border border-gray-300 px-4 py-2">${r.id}</td>
+                  <td class="border border-gray-300 px-4 py-2">${r.descricao}</td>
+                  <td class="border border-gray-300 px-4 py-2">${r.status}</td>
+                  <td class="border border-gray-300 px-4 py-2">${r.data}</td>
+              </tr>
+          `;
+      });
+
+      table += "</tbody></table>";
+      container.innerHTML = table;
+
+  } catch (err) {
+      container.innerHTML = `<p class="text-red-500">Erro ao carregar requisições pendentes.</p>`;
+  }
+}
+
+
+
+async function mostrarHistórico() {
+  const container = document.getElementById("minhasRequisicoes");
+  container.classList.remove("hidden");
+}
+
+async function fecharHistorico() {
+  const container = document.getElementById("minhasRequisicoes");
+  container.classList.add("hidden");
+}

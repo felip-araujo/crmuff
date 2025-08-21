@@ -34,23 +34,39 @@
     <main class="p-6 flex flex gap-6">
         <div class="flex justify-start">
             <button onclick="abrirModal()"
-                class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-lm">
+                class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mt-4">
                 Nova Requisição
+            </button>
+            <button onclick="mostrarHistórico()"
+                class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mt-4 mx-4">
+                Histórico de Requisições
+            </button>
+            <button onclick="carregarRequisicoesPendentes()"
+                class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mt-4">
+                Requisições Pendentes
             </button>
         </div>
     </main>
     <section>
-
-        <div id="minhasRequisicoes" class="p-6 flex flex gap-6">
+        <div id="minhasRequisicoes" class="p-6 flex flex gap-6 hidden">   
             <!-- Aqui a tabela será injetada pelo JS -->
-            <p class="italic text-gray-500 dark:text-gray-400">Carregando requisições...</p>
+            <p class="italic text-gray-500 dark:text-gray-400 ">Carregando requisições...</p>
+    </section>
+    <section>
+        <div id="requisicoesPendentes" class="p-6 flex flex gap-6 hidden">   
+            <!-- Aqui a tabela será injetada pelo JS -->
+            <p class="italic text-gray-500 dark:text-gray-400 ">Carregando requisições...</p>
     </section>
 
     <!-- MODAL -->
     <dialog id="modalRequisicao"
+
+    
         class="fixed inset-0 z-50 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
         <!-- FUNDO -->
-        <div onclick="fecharModal()" class="fixed inset-0 bg-gray-500/75 transition-opacity backdrop-blur-sm"></div>
+        <div onclick="fecharModal()" class="fixed inset-0 bg-gray-500/75 transition-opacity backdrop-blur-sm">
+            
+        </div>
 
         <!-- CONTEÚDO DO MODAL -->
         <div tabindex="0" class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
