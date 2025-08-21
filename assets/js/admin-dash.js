@@ -75,13 +75,13 @@ async function abrirModal() {
 async function abrirModalPendentes() {
     const modal = document.getElementById("modalRequisicao");
     const tabela = document.getElementById("tabelaRequisicoes");
-    titulo.textContent = "Requisições Pendentes"
+    titulo.textContent = "Requisições Pendentes";
+
     tabela.innerHTML = `
-    
-<tr>
-    <td colspan="7" class="p-4 text-center italic text-gray-500">Carregando...</td>
-</tr>
-`;
+        <tr>
+            <td colspan="8" class="p-4 text-center italic text-gray-500">Carregando...</td>
+        </tr>
+    `;
 
     try {
         const response = await fetch("https://evoludesign.com.br/api-conipa/requisicoes/pendentes.php");
@@ -90,45 +90,48 @@ async function abrirModalPendentes() {
         if (data.success) {
             if (!data.requisicoes || data.requisicoes.length === 0) {
                 tabela.innerHTML = `
-            <tr>
-                <td colspan="7" class="p-4 text-center italic text-gray-500">Nenhuma requisição encontrada.</td>
-            </tr>
-        `;
+                    <tr>
+                        <td colspan="8" class="p-4 text-center italic text-gray-500">Nenhuma requisição encontrada.</td>
+                    </tr>
+                `;
             } else {
-
-
-
-
                 tabela.innerHTML = "";
 
                 data.requisicoes.forEach(req => {
-                    // Verifica se há itens
+                    // Itens
                     const itensHtml = Array.isArray(req.itens)
                         ? req.itens.map(item =>
                             `<div class="mb-1">• ${item.codigo_material} (Qtd: ${item.quantidade})</div>`
                         ).join("")
                         : '<span class="italic text-gray-400">Sem itens</span>';
 
+                    // Linha com ações
                     const row = `
-                <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                    <td class="px-4 py-2">${req.id}</td>
-                    <td class="px-4 py-2">${req.nome}</td>
-                    <td class="px-4 py-2">${req.setor}</td>
-                    <td class="px-4 py-2">${req.re}</td>
-                    <td class="px-4 py-2">${req.status}</td>
-                    <td class="px-4 py-2">${req.criado_em}</td>
-                    <td class="px-4 py-2">${itensHtml}</td>
-                </tr>
-            `;
+                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                            <td class="px-4 py-2">${req.id}</td>
+                            <td class="px-4 py-2">${req.nome}</td>
+                            <td class="px-4 py-2">${req.setor}</td>
+                            <td class="px-4 py-2">${req.re}</td>
+                            <td class="px-4 py-2">${req.status}</td>
+                            <td class="px-4 py-2">${req.criado_em}</td>
+                            <td class="px-4 py-2">${itensHtml}</td>
+                            <td class="px-4 py-2 flex gap-2">
+                                <button onclick="alterarStatus(${req.id}, 'aprovado')" 
+                                    class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">Aprovar</button>
+                                <button onclick="alterarStatus(${req.id}, 'rejeitado')" 
+                                    class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">Rejeitar</button>
+                            </td>
+                        </tr>
+                    `;
                     tabela.insertAdjacentHTML("beforeend", row);
                 });
             }
         } else {
             tabela.innerHTML = `
-        <tr>
-            <td colspan="7" class="p-4 text-center text-red-600">Erro ao carregar dados da API.</td>
-        </tr>
-    `;
+                <tr>
+                    <td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar dados da API.</td>
+                </tr>
+            `;
         }
 
         // Abrir modal
@@ -140,12 +143,39 @@ async function abrirModalPendentes() {
     } catch (error) {
         console.error("Erro ao buscar dados:", error);
         tabela.innerHTML = `
-    <tr>
-        <td colspan="7" class="p-4 text-center text-red-600">Erro ao carregar requisições.</td>
-    </tr>
-`;
+            <tr>
+                <td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar requisições.</td>
+            </tr>
+        `;
     }
 }
+
+// Função para aprovar/rejeitar
+async function alterarStatus(id, status) {
+    try {
+        const response = await fetch("https://evoludesign.com.br/api-conipa/requisicoes/aprovar-requisicao.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id_requisicao: id,
+                status_requisicao: status
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            alert(result.mensagem);
+            abrirModalPendentes(); // Atualiza tabela depois da ação
+        } else {
+            alert(result.erro || "Erro ao atualizar requisição.");
+        }
+    } catch (error) {
+        console.error("Erro no fetch:", error);
+        alert("Erro na comunicação com a API.");
+    }
+}
+
 
 
 async function UsuariosPendentes() {
