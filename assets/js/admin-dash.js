@@ -1,14 +1,30 @@
 const titulo = document.getElementById("titulo");
 const Api = "https://evoludesign.com.br/api-conipa";
 
-async function abrirModal() {
+
+// Função para formatar data YYYY-MM-DD HH:MM:SS → DD-MM-YYYY
+function formatarDataBR(dataStr) {
+    if (!dataStr) return "";
+    const [data] = dataStr.split(" "); // pega só a parte da data
+    const [ano, mes, dia] = data.split("-");
+    return `${dia}-${mes}-${ano}`;
+}
+
+
+
+let paginaAtualModal = 1; 
+const limiteModal =  10;
+
+async function abrirModal(pagina = 1) {
+    paginaAtualModal = pagina;
+
     const modal = document.getElementById("modalRequisicao");
     const tabela = document.getElementById("tabelaRequisicoes");
 
-    titulo.textContent = "Todas as Requisições"
+    titulo.textContent = "Todas as Requisições";
     tabela.innerHTML = `
 <tr>
-    <td colspan="7" class="p-4 text-center italic text-gray-500">Carregando...</td>
+    <td colspan="8" class="p-4 text-center italic text-gray-500">Carregando...</td>
 </tr>
 `;
 
@@ -20,14 +36,19 @@ async function abrirModal() {
             if (!data.requisicoes || data.requisicoes.length === 0) {
                 tabela.innerHTML = `
             <tr>
-                <td colspan="7" class="p-4 text-center italic text-gray-500">Nenhuma requisição encontrada.</td>
+                <td colspan="8" class="p-4 text-center italic text-gray-500">Nenhuma requisição encontrada.</td>
             </tr>
         `;
             } else {
                 tabela.innerHTML = "";
 
-                data.requisicoes.forEach(req => {
-                    // Verifica se há itens
+                // Paginação
+                const totalPaginas = Math.ceil(data.requisicoes.length / limiteModal);
+                const inicio = (paginaAtualModal - 1) * limiteModal;
+                const fim = inicio + limiteModal;
+                const requisicoesPagina = data.requisicoes.slice(inicio, fim);
+
+                requisicoesPagina.forEach(req => {
                     const itensHtml = Array.isArray(req.itens)
                         ? req.itens.map(item =>
                             `<div class="mb-1">• ${item.codigo_material} (Qtd: ${item.quantidade})</div>`
@@ -41,17 +62,36 @@ async function abrirModal() {
                     <td class="px-4 py-2">${req.setor}</td>
                     <td class="px-4 py-2">${req.re}</td>
                     <td class="px-4 py-2">${req.status}</td>
-                    <td class="px-4 py-2">${req.criado_em}</td>
+                    <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
                     <td class="px-4 py-2">${itensHtml}</td>
+                    <td>
+                        <button onclick="alterarStatus(${req.id}, 'rejeitado')" 
+                                class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">
+                            Excluir
+                        </button>
+                    </td>
                 </tr>
             `;
                     tabela.insertAdjacentHTML("beforeend", row);
                 });
+
+                // Controles de paginação
+                let paginacaoHTML = `<tr><td colspan="8" class="px-4 py-2 text-center"><div class="flex justify-center gap-2 mt-4">`;
+                for (let i = 1; i <= totalPaginas; i++) {
+                    paginacaoHTML += `
+                        <button onclick="abrirModal(${i})"
+                                class="px-3 py-1 rounded ${i === paginaAtualModal ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-600 dark:text-white'}">
+                            ${i}
+                        </button>
+                    `;
+                }
+                paginacaoHTML += `</div></td></tr>`;
+                tabela.insertAdjacentHTML("beforeend", paginacaoHTML);
             }
         } else {
             tabela.innerHTML = `
         <tr>
-            <td colspan="7" class="p-4 text-center text-red-600">Erro ao carregar dados da API.</td>
+            <td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar dados da API.</td>
         </tr>
     `;
         }
@@ -66,14 +106,17 @@ async function abrirModal() {
         console.error("Erro ao buscar dados:", error);
         tabela.innerHTML = `
     <tr>
-        <td colspan="7" class="p-4 text-center text-red-600">Erro ao carregar requisições.</td>
+        <td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar requisições.</td>
     </tr>
 `;
     }
 }
 
+
 let paginaAtualPendentes = 1;
 const limitePendentes = 10; // 10 itens por página
+
+
 
 async function abrirModalPendentes(pagina = 1) {
     paginaAtualPendentes = pagina;
@@ -127,7 +170,7 @@ async function abrirModalPendentes(pagina = 1) {
                         <td class="px-4 py-2">${req.setor}</td>
                         <td class="px-4 py-2">${req.re}</td>
                         <td class="px-4 py-2">${req.status}</td>
-                        <td class="px-4 py-2">${req.criado_em}</td>
+                        <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
                         <td class="px-4 py-2">${itensHtml}</td>
                         <td class="px-4 py-2 flex gap-2">
                             <button onclick="alterarStatus(${req.id}, 'aprovado')" 
@@ -176,6 +219,9 @@ async function abrirModalPendentes(pagina = 1) {
     }
 }
 
+
+
+
 // Função para aprovar/rejeitar
 async function alterarStatus(id, status) {
     try {
@@ -209,8 +255,8 @@ async function alterarStatus(id, status) {
 async function UsuariosPendentes() {
     const modal = document.getElementById("modalUsuariosPendentes");
     const tabela = document.getElementById("tabelaUsuariosPendentes");
-    const titulo = document.getElementById("titulo");
-    titulo.textContent = "Pré-Cadastro de Usuários";
+    const titulo2 = document.getElementById("tituloUsuarios");
+    titulo2.textContent = "Pré-Cadastro de Usuários";
 
     tabela.innerHTML = `
         <tr>
