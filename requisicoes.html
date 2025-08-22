@@ -41,31 +41,29 @@
                 class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mt-4 mx-4">
                 Histórico de Requisições
             </button>
-            <button onclick="carregarRequisicoesPendentes()"
+            <button onclick="RequisicoesPendentes()"
                 class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mt-4">
                 Requisições Pendentes
+            </button>
+            <button onclick="verMaterial()"
+                class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mt-4 mx-4">
+                Ver Material
             </button>
         </div>
     </main>
     <section>
-        <div id="minhasRequisicoes" class="p-6 flex flex gap-6 hidden">   
+        <div id="minhasRequisicoes" class="p-6 flex flex gap-6 hidden">
             <!-- Aqui a tabela será injetada pelo JS -->
             <p class="italic text-gray-500 dark:text-gray-400 ">Carregando requisições...</p>
     </section>
-    <section>
-        <div id="requisicoesPendentes" class="p-6 flex flex gap-6 hidden">   
-            <!-- Aqui a tabela será injetada pelo JS -->
-            <p class="italic text-gray-500 dark:text-gray-400 ">Carregando requisições...</p>
-    </section>
+
 
     <!-- MODAL -->
     <dialog id="modalRequisicao"
-
-    
         class="fixed inset-0 z-50 size-auto max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
         <!-- FUNDO -->
         <div onclick="fecharModal()" class="fixed inset-0 bg-gray-500/75 transition-opacity backdrop-blur-sm">
-            
+
         </div>
 
         <!-- CONTEÚDO DO MODAL -->
@@ -111,6 +109,107 @@
         </div>
     </dialog>
 
+    <dialog id="Material"
+        class="fixed inset-0 z-50 max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
+
+
+        <!-- FUNDO -->
+        <div onclick="fecharModalMaterial()" class="fixed inset-0 bg-gray-500/75 transition-opacity backdrop-blur-sm">
+        </div>
+
+        <!-- CONTEÚDO DO MODAL -->
+        <div tabindex="0" class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div
+                class="relative z-10 transform overflow-hidden rounded-lg bg-white dark:bg-stone-950 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+
+                <div class="bg-white dark:bg-stone-950 px-6 pt-6 pb-6 sm:p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 id="tituloMaterial" class="text-lg font-semibold text-gray-900 dark:text-gray-100"></h3>
+                        <button onclick="fecharModalMaterial()"
+                            class="text-gray-500 hover:text-red-600 text-xl">&times;</button>
+                    </div>
+
+                    <!-- TABELA DE USUÁRIOS -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                            <thead class="bg-gray-100 dark:bg-gray-800">
+                                <tr>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Código</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Descrição</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Grupo</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Ação</th>
+
+                            </thead>
+
+                            <tbody id="tabelaMaterial"
+                                class="bg-white dark:bg-stone-950 divide-y divide-gray-200 dark:divide-gray-800 text-gray-800 dark:text-gray-100">
+                                <!-- Linhas dinâmicas aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+
+    <dialog id="Pendentes"
+        class="fixed inset-0 z-50 max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
+
+
+        <!-- FUNDO -->
+        <div onclick="fecharModalPendentes()" class="fixed inset-0 bg-gray-500/75 transition-opacity backdrop-blur-sm">
+        </div>
+
+        <!-- CONTEÚDO DO MODAL -->
+        <div tabindex="0" class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div
+                class="relative z-10 transform overflow-hidden rounded-lg bg-white dark:bg-stone-950 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+
+                <div class="bg-white dark:bg-stone-950 px-6 pt-6 pb-6 sm:p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 id="tituloPendentes" class="text-lg font-semibold text-gray-900 dark:text-gray-100"></h3>
+                        <button onclick="fecharModalPendentes()"
+                            class="text-gray-500 hover:text-red-600 text-xl">&times;</button>
+                    </div>
+
+                    <!-- TABELA DE USUÁRIOS -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                            <thead class="bg-gray-100 dark:bg-gray-800">
+                                <tr>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Itens</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Data</th>
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300">
+                                        Status</th>
+                            </thead>
+
+                            <tbody id="tabelaPendentes"
+                                class="bg-white dark:bg-stone-950 divide-y divide-gray-200 dark:divide-gray-800 text-gray-800 dark:text-gray-100">
+                                <!-- Linhas dinâmicas aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+
+
     <!-- RODAPÉ -->
     <div class="absolute bottom-2 right-4 flex items-center gap-2">
         <a class="text-black-200 dark:text-gray-200 font-low text-xs" href="https://evoludesign.com.br/">
@@ -120,6 +219,18 @@
 
     <script src="assets/js/requisicoes.js"></script>
     <!-- JS -->
+    <script>
+        function fecharModalMaterial() {
+            const modal = document.getElementById("Material");
+            if (typeof modal.close === "function") modal.close();
+            else modal.classList.add("hidden");
+        }
+        function fecharModalPendentes() {
+            const modal = document.getElementById("Pendentes");
+            if (typeof modal.close === "function") modal.close();
+            else modal.classList.add("hidden");
+        }
+    </script>
 
 </body>
 
