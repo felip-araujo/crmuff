@@ -101,25 +101,25 @@
                   formulário. Sua solicitação será avaliada por um administrador responsável.</p>
               </div>
               <div id="formulario-cadastro">
-                <input id="nome" type="text" placeholder="Nome"
-                  class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white mt-4" />
+                <input id="nome" name="nome" type="text" placeholder="Nome" required
+                  class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white mt-4"  />
 
-                <input type="email" id="e-mail" placeholder="Email"
+                <input type="email" name="email" id="e-mail" placeholder="Email" required
                   class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
 
-                <select name="setor" id="setor" aria-placeholder="departamento"
+                <select name="setor" id="setor" aria-placeholder="departamento" required
                   class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white">
                   <option value="Almoxarifado">Almoxarifado</option>
                   <option value="Pedras">Pedras</option>
                   <option value="Controle de Qualidade">Controle de Qualidade </option>
                 </select>
-                <input type="number" id="re" placeholder="RE:"
+                <input type="number"  id="RE" name="RE" placeholder="RE:" required
+                  class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white " />
+ 
+                <input type="text" id="senha1" name="senha1" placeholder="Senha:" required
                   class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white " />
 
-                <input type="text" id="senha1" placeholder="Senha:"
-                  class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white " />
-
-                <input type="text" id="senha-confirm" placeholder="Confirme a Senha:"
+                <input type="text" id="senha-confirm" name="senha-confirm" placeholder="Confirme a Senha:" required
                   class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white " />
               </div>
               <p id="errorModal" class="text-red-500 text-sm hidden">Usuário ou senha incorretos.</p>
@@ -167,7 +167,7 @@
                 <p class="text-sm text-gray-500">Digite o seu RE.</p>
               </div>
               <div id="formulario-cadastro">
-                <input type="text" id="RE" placeholder="RE"
+                <input type="number" id="re-esq" name="re-esq" placeholder="RE:"
                   class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white mt-4" />
 
                 <input type="text" id="nova_senha" placeholder="Nova Senha"

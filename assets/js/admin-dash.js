@@ -10,108 +10,87 @@ function formatarDataBR(dataStr) {
 }
 
 let paginaAtualModal = 1; // controla a página atual
+const limiteModal = 10; // itens por página
 
 async function abrirModal(pagina = 1) {
-  paginaAtualModal = pagina;
+    paginaAtualModal = pagina;
 
-  const modal = document.getElementById("modalRequisicao");
-  const tabela = document.getElementById("tabelaRequisicoes");
+    const modal = document.getElementById("modalRequisicao");
+    const tabela = document.getElementById("tabelaRequisicoes");
 
-  titulo.textContent = "Todas as Requisições";
-  tabela.innerHTML = `
-<tr>
-    <td colspan="8" class="p-4 text-center italic text-gray-500">Carregando...</td>
-</tr>
-`;
+    titulo.textContent = "Todas as Requisições";
+    tabela.innerHTML = `<tr><td colspan="8" class="p-4 text-center italic text-gray-500">Carregando...</td></tr>`;
 
-  try {
-    const response = await fetch(
-      `https://evoludesign.com.br/api-conipa/requisicoes/lsitar.php?page=${pagina}&limit=10`
-    );
-    const data = await response.json();
+    try {
+        // Ajuste: enviar parâmetros que o PHP espera
+        const response = await fetch(
+            `https://evoludesign.com.br/api-conipa/requisicoes/lsitar.php?pagina=${pagina}&por_pagina=${limiteModal}`
+        );
+        const data = await response.json();
 
-    if (data.success) {
-      if (!data.requisicoes || data.requisicoes.length === 0) {
-        tabela.innerHTML = `
-                <tr>
-                    <td colspan="8" class="p-4 text-center italic text-gray-500">Nenhuma requisição encontrada.</td>
-                </tr>
-            `;
-      } else {
-        tabela.innerHTML = "";
+        if (data.success) {
+            if (!data.requisicoes || data.requisicoes.length === 0) {
+                tabela.innerHTML = `<tr><td colspan="8" class="p-4 text-center italic text-gray-500">Nenhuma requisição encontrada.</td></tr>`;
+            } else {
+                tabela.innerHTML = "";
 
-        data.requisicoes.forEach((req) => {
-          const itensHtml = Array.isArray(req.itens)
-            ? req.itens
-                .map(
-                  (item) =>
-                    `<div class="mb-1">• ${item.codigo_material} (Qtd: ${item.quantidade})</div>`
-                )
-                .join("")
-            : '<span class="italic text-gray-400">Sem itens</span>';
+                // Renderiza linhas
+                data.requisicoes.forEach(req => {
+                    const itensHtml = Array.isArray(req.itens)
+                        ? req.itens.map(item => `<div class="mb-1">• ${item.codigo_material} (Qtd: ${item.quantidade})</div>`).join("")
+                        : '<span class="italic text-gray-400">Sem itens</span>';
 
-          const row = `
-                <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                    <td class="px-4 py-2">${req.nome}</td>
-                    <td class="px-4 py-2">${req.setor}</td>
-                    <td class="px-4 py-2">${req.re}</td>
-                    <td class="px-4 py-2">${req.status}</td>
-                    <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
-                    <td class="px-4 py-2">${itensHtml}</td>
-                    <td>
-                        <button onclick="excluirReqGeral(${req.id})" 
-                                class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">
-                            Excluir
-                        </button>
-                    </td>
-                </tr>
-            `;
-          tabela.insertAdjacentHTML("beforeend", row);
-        });
-
-        // Controles de paginação usando dados do backend
-        const totalPaginas = data.total_paginas;
-        const paginaAtual = data.pagina_atual;
-
-        let paginacaoHTML = `<tr><td colspan="8" class="px-4 py-2 text-center"><div class="flex justify-center gap-2 mt-4">`;
-        for (let i = 1; i <= totalPaginas; i++) {
-          paginacaoHTML += `
-                        <button onclick="abrirModal(${i})"
-                                class="px-3 py-1 rounded ${
-                                  i === paginaAtual
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-gray-200 dark:bg-gray-600 dark:text-white"
-                                }">
-                            ${i}
-                        </button>
+                    const row = `
+                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                            <td class="px-4 py-2">${req.nome}</td>
+                            <td class="px-4 py-2">${req.setor}</td>
+                            <td class="px-4 py-2">${req.re}</td>
+                            <td class="px-4 py-2">${req.status}</td>
+                            <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
+                            <td class="px-4 py-2">${itensHtml}</td>
+                            <td>
+                                <button onclick="excluirReqGeral(${req.id})" class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">Excluir</button>
+                            </td>
+                        </tr>
                     `;
-        }
-        paginacaoHTML += `</div></td></tr>`;
-        tabela.insertAdjacentHTML("beforeend", paginacaoHTML);
-      }
-    } else {
-      tabela.innerHTML = `
-            <tr>
-                <td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar dados da API.</td>
-            </tr>
-        `;
-    }
+                    tabela.insertAdjacentHTML("beforeend", row);
+                });
 
-    // Abrir modal
-    if (typeof modal.showModal === "function") {
-      modal.showModal();
-    } else {
-      modal.classList.remove("hidden");
+                // Paginação
+                const totalPaginas = data.total_paginas;
+                const paginaAtual = data.pagina_atual;
+
+                let paginacaoHTML = `<tr><td colspan="8" class="px-4 py-2 text-center"><div class="flex justify-center gap-2 mt-4">`;
+
+                // Botão Anterior
+                paginacaoHTML += `<button ${paginaAtual === 1 ? "disabled" : ""} onclick="abrirModal(${paginaAtual - 1})" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 dark:text-white">Anterior</button>`;
+
+                // Páginas visíveis (máx 5)
+                let startPage = Math.max(paginaAtual - 2, 1);
+                let endPage = Math.min(startPage + 4, totalPaginas);
+
+                for (let i = startPage; i <= endPage; i++) {
+                    paginacaoHTML += `<button onclick="abrirModal(${i})" class="px-3 py-1 rounded ${i === paginaAtual ? "bg-blue-600 text-white" : "bg-gray-200 dark:bg-gray-600 dark:text-white"}">${i}</button>`;
+                }
+
+                // Botão Próximo
+                paginacaoHTML += `<button ${paginaAtual === totalPaginas ? "disabled" : ""} onclick="abrirModal(${paginaAtual + 1})" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 dark:text-white">Próximo</button>`;
+
+                paginacaoHTML += `</div></td></tr>`;
+                tabela.insertAdjacentHTML("beforeend", paginacaoHTML);
+            }
+        } else {
+            tabela.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar dados da API.</td></tr>`;
+        }
+
+        if (typeof modal.showModal === "function") modal.showModal();
+        else modal.classList.remove("hidden");
+    } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+        tabela.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar requisições.</td></tr>`;
     }
-  } catch (error) {
-    console.error("Erro ao buscar dados:", error);
-    tabela.innerHTML = `
-        <tr>
-            <td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar requisições.</td>
-        </tr>
-    `;
-  }
 }
+
 
 async function excluirReqGeral(id) {
   let confirmacao = confirm("Realmente deseja excluir essa requisição?");
@@ -299,71 +278,59 @@ async function alterarStatus(id, status) {
   }
 }
 
-async function UsuariosPendentes() {
-  const modal = document.getElementById("modalUsuariosPendentes");
-  const tabela = document.getElementById("tabelaUsuariosPendentes");
-  const titulo2 = document.getElementById("tituloUsuarios");
-  titulo2.textContent = "Pré-Cadastro de Usuários";
+let paginaAtualUsuarios = 1; // controla a página atual
+const limiteUsuarios = 10;   // registros por página
 
-  tabela.innerHTML = `
+async function UsuariosPendentes(pagina = 1) {
+    paginaAtualUsuarios = pagina;
+
+    const modal = document.getElementById("modalUsuariosPendentes");
+    const tabela = document.getElementById("tabelaUsuariosPendentes");
+    const titulo2 = document.getElementById("tituloUsuarios");
+    titulo2.textContent = "Pré-Cadastro de Usuários";
+
+    tabela.innerHTML = `
         <tr>
             <td colspan="7" class="p-4 text-center italic text-gray-500">Carregando...</td>
         </tr>
     `;
 
-  try {
-    const response = await fetch(Api + "/usuarios/listar-pendentes.php");
-    const data = await response.json();
+    try {
+        // ✅ Envia a página e limite para o PHP
+        const response = await fetch(
+            `${Api}/usuarios/listar-pendentes.php?pagina=${pagina}&por_pagina=${limiteUsuarios}`
+        );
+        const data = await response.json();
 
-    if (data.success) {
-      if (!data.usuarios || data.usuarios.length === 0) {
-        tabela.innerHTML = `
+        if (data.success) {
+            if (!data.usuarios || data.usuarios.length === 0) {
+                tabela.innerHTML = `
                     <tr>
                         <td colspan="7" class="p-4 text-center italic text-gray-500">
                             Nenhum usuário pendente encontrado.
                         </td>
                     </tr>
                 `;
-      } else {
-        tabela.innerHTML = "";
-        data.usuarios.forEach((user) => {
-          const row = `
+            } else {
+                tabela.innerHTML = "";
+                data.usuarios.forEach((user) => {
+                    const row = `
                         <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                             <td class="px-4 py-2">${user.id}</td>
                             <td class="px-4 py-2">${user.nome}</td>
-                            <td class="px-4 py-2">${user.setor}</td>
+                            <td class="px-4 py-2">${user.setor || "-"}</td>
                             <td class="px-4 py-2">${user.re}</td>
                             <td class="px-4 py-2">
-                                <select id="acao_${
-                                  user.id
-                                }" class="border rounded p-1 text-sm">
-                                    <option value="pendente" ${
-                                      user.status === "pendente"
-                                        ? "selected"
-                                        : ""
-                                    }>Pendente</option>
-                                    <option value="aprovar" ${
-                                      user.status === "aprovado"
-                                        ? "selected"
-                                        : ""
-                                    }>Aprovado</option>
-                                    <option value="rejeitar" ${
-                                      user.status === "rejeitado"
-                                        ? "selected"
-                                        : ""
-                                    }>Rejeitado</option>
+                                <select id="acao_${user.id}" class="border rounded p-1 text-sm">
+                                    <option value="pendente" ${user.status === "pendente" ? "selected" : ""}>Pendente</option>
+                                    <option value="aprovar" ${user.status === "aprovado" ? "selected" : ""}>Aprovado</option>
+                                    <option value="rejeitar" ${user.status === "rejeitado" ? "selected" : ""}>Rejeitado</option>
                                 </select>
                             </td>
                             <td class="px-4 py-2">
-                                <select id="tipo_${
-                                  user.id
-                                }" class="border rounded p-1 text-sm">
-                                    <option value="admin" ${
-                                      user.tipo === "admin" ? "selected" : ""
-                                    }>Administrador</option>
-                                    <option value="usuario" ${
-                                      user.tipo === "usuario" ? "selected" : ""
-                                    }>Usuário</option>
+                                <select id="tipo_${user.id}" class="border rounded p-1 text-sm">
+                                    <option value="admin" ${user.tipo === "admin" ? "selected" : ""}>Administrador</option>
+                                    <option value="usuario" ${user.tipo === "usuario" ? "selected" : ""}>Usuário</option>
                                 </select>
                             </td>
                             <td class="px-4 py-2">
@@ -375,31 +342,55 @@ async function UsuariosPendentes() {
                             </td>
                         </tr>
                     `;
-          tabela.insertAdjacentHTML("beforeend", row);
-        });
-      }
-    } else {
-      tabela.innerHTML = `
+                    tabela.insertAdjacentHTML("beforeend", row);
+                });
+
+                // ✅ Paginação
+                const totalPaginas = data.totalPaginas;
+                const paginaAtual = data.page;
+
+                let paginacaoHTML = `<tr><td colspan="7" class="px-4 py-2 text-center"><div class="flex justify-center gap-2 mt-4">`;
+
+                // Botão Anterior
+                paginacaoHTML += `<button ${paginaAtual === 1 ? "disabled" : ""} onclick="UsuariosPendentes(${paginaAtual - 1})" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 dark:text-white">Anterior</button>`;
+
+                // Páginas visíveis (máx 5)
+                let startPage = Math.max(paginaAtual - 2, 1);
+                let endPage = Math.min(startPage + 4, totalPaginas);
+
+                for (let i = startPage; i <= endPage; i++) {
+                    paginacaoHTML += `<button onclick="UsuariosPendentes(${i})" class="px-3 py-1 rounded ${i === paginaAtual ? "bg-blue-600 text-white" : "bg-gray-200 dark:bg-gray-600 dark:text-white"}">${i}</button>`;
+                }
+
+                // Botão Próximo
+                paginacaoHTML += `<button ${paginaAtual === totalPaginas ? "disabled" : ""} onclick="UsuariosPendentes(${paginaAtual + 1})" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 dark:text-white">Próximo</button>`;
+
+                paginacaoHTML += `</div></td></tr>`;
+                tabela.insertAdjacentHTML("beforeend", paginacaoHTML);
+            }
+        } else {
+            tabela.innerHTML = `
                 <tr>
                     <td colspan="7" class="p-4 text-center text-red-600">Erro ao carregar usuários.</td>
                 </tr>
             `;
-    }
+        }
 
-    // Abrir modal
-    if (typeof modal.showModal === "function") modal.showModal();
-    else modal.classList.remove("hidden");
-  } catch (error) {
-    console.error("Erro ao buscar usuários:", error);
-    tabela.innerHTML = `
+        // Abrir modal
+        if (typeof modal.showModal === "function") modal.showModal();
+        else modal.classList.remove("hidden");
+    } catch (error) {
+        console.error("Erro ao buscar usuários:", error);
+        tabela.innerHTML = `
             <tr>
                 <td colspan="7" class="p-4 text-center text-red-600">
                     Erro ao carregar usuários pendentes.
                 </td>
             </tr>
         `;
-  }
+    }
 }
+
 
 async function atualizarStatus(userId) {
   const acao = document.getElementById(`acao_${userId}`).value;
@@ -614,17 +605,40 @@ async function excluirMaterial(id) {
 }
 
 async function OpenAddMaterial() {
-    const modal = document.getElementById("adicionarMaterial");
-  
-  
-  
-  
-  
-  
-    // Abrir modal
+  const modal = document.getElementById("adicionarMaterial");
+
+  // Abrir modal
   if (typeof modal.showModal === "function") {
     modal.showModal();
   } else {
     modal.classList.remove("hidden");
   }
+}
+
+async function adicionarMaterial() {
+  codigo = document.getElementById("codigo_material").value;
+  descricao = document.getElementById("descricao_material").value;
+  grupo = document.getElementById("grupo_material").value;
+
+  try {
+    const response = await fetch(
+      "https://evoludesign.com.br/api-conipa/material/adicionar.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ codigo, descricao, grupo }),
+      }
+    );
+
+    const resposta = await response.json();
+    if (resposta.sucess) {
+      alert("Material Adicionado com Sucesso");
+      console.log(resposta);
+    } else {
+      alert("Erro ao Adicionar Material");
+      console.log(resposta);
+    }
+  } catch ($e) {}
+
+  console.log(codigo, descricao, grupo);
 }
