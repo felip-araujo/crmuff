@@ -7,6 +7,9 @@
     <title>Sistema Integrado - Conipa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -18,7 +21,7 @@
     class="bg-gradient-to-l from-gray-50 to-gray-300 dark:from-neutral-800 dark:to-stone-950 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200">
     <!-- TOGGLE DARK MODE -->
     <div class="absolute top-4 right-4 flex items-center gap-2">
-        <label class="text-gray-700 dark:text-gray-200 font-medium">Tema Escuro</label>
+        <label class="text-gray-700 dark:text-gray-200 font-medium"  data-intro="Aqui você pode alterar o Tema do sistema" data-step="5">Tema Escuro</label>
         <label class="inline-flex items-center cursor-pointer">
             <input type="checkbox" id="toggleDarkMode" class="sr-only" />
             <div class="w-11 h-6 bg-gray-300 rounded-full shadow-inner relative transition-colors dark:bg-gray-600">
@@ -27,25 +30,32 @@
                 </div>
             </div>
         </label>
-        <a class="" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+        <a class="" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket" data-intro="Aqui você pode sair do sistema" data-step="6"></i></a>
+    </div>
+    <div class="absolute top-4 right-4 flex items-center gap-2 mt-10">
+        
+        <button id="btnStart" class="text-gray-700 dark:text-gray-200 font-medium"> <i class="fa-solid fa-circle-info"></i> Guia rápido do sistema</button>
     </div>
 
     <!-- CONTAINER PRINCIPAL -->
-    <main class="p-6 flex flex gap-6">
-        <div class="flex justify-start">
-            <button onclick="abrirModal()"
+    <main class="min-h-screen flex items-center justify-center">
+
+
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 bg-white shadow-xl rounded-2xl p-10">
+
+            <button onclick="abrirModal()"  data-intro="Aqui você pode criar uma nova requisição" data-step="1"
                 class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mt-4">
                 Nova Requisição
             </button>
-            <button onclick="mostrarHistórico()"
+            <button onclick="mostrarHistórico()" data-intro="Aqui você pode acessar o seu Histórico de Requisições" data-step="2"
                 class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mt-4 mx-4">
                 Histórico de Requisições
             </button>
-            <button onclick="RequisicoesPendentes()"
+            <button onclick="RequisicoesPendentes()" data-intro="Aqui você pode verificar se tem requisições pendentes" data-step="3"
                 class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mt-4">
                 Requisições Pendentes
             </button>
-            <button onclick="verMaterial()"
+            <button onclick="verMaterial()" data-intro="Aqui você pode ver o Material disponível e copiar o código de Material" data-step="4"
                 class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mt-4 mx-4">
                 Ver Material
             </button>
@@ -230,6 +240,11 @@
             if (typeof modal.close === "function") modal.close();
             else modal.classList.add("hidden");
         }
+
+        document.getElementById("btnStart").addEventListener("click", function () {
+            introJs().start();
+        });
+
     </script>
 
 </body>
