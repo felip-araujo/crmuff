@@ -7,6 +7,8 @@
     <title>Sistema Integrado - Conipa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -29,23 +31,35 @@
         </label>
         <a class="" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
     </div>
+    <div class="absolute top-4 right-4 flex items-center gap-2 mt-8">
+        <button id="btnStart" class="text-gray-700 dark:text-gray-200 font-medium"> <i
+                class="fa-solid fa-circle-info"></i> Guia rápido do sistema</button>
+    </div>
 
     <!-- CONTAINER PRINCIPAL -->
     <main class="min-h-screen flex items-center justify-center ">
         <div class=" grid grid-cols-1 xl:grid-cols-2 gap-4 bg-white shadow-xl rounded-2xl p-10">
-            <button onclick="abrirModal()"
+            <button onclick="abrirModal()" data-intro="Aqui você pode acessar todas as Requisições" data-step="1"
                 class="bg-blue-800 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mx-4">
                 Todas as requisições
             </button>
             <button onclick="abrirModalPendentes()"
-                class="bg-blue-800 text-white px-4 py-2 rounded text-xl mx-4">Requisições Pendentes</button>
-            <button onclick="usuariosGeral()" class="bg-blue-800 text-white px-4 py-2 rounded text-xl mx-4">Todos os
+                data-intro="Aqui você visualiza as requisições pendentes e pode aprovar ou rejeitar cada uma delas."
+                data-step="2" class="bg-blue-800 text-white px-4 py-2 rounded text-xl mx-4">Requisições
+                Pendentes</button>
+            <button onclick="usuariosGeral()" class="bg-blue-800 text-white px-4 py-2 rounded text-xl mx-4"
+                data-intro="Aqui você visualiza todos os Usuários cadastrados no sistema." data-step="3">Todos os
                 Usuários</button>
-            <button onclick="UsuariosPendentes()" class="bg-blue-800 text-white px-4 py-2 rounded text-xl mx-4">Usuários
+            <button onclick="UsuariosPendentes()" class="bg-blue-800 text-white px-4 py-2 rounded text-xl mx-4"
+                data-intro="Aqui você visualiza todos os usuários pendentes de aprovação para acessar o sistema."
+                data-step="4">Usuários
                 pendentes</button>
-            <button onclick="verMaterial()" class="bg-blue-800 text-white px-4 py-2 rounded text-xl mx-4">Ver
+            <button onclick="verMaterial()" class="bg-blue-800 text-white px-4 py-2 rounded text-xl mx-4"
+                data-intro="Gerencie os materiais disponíveis no estoque, com a opção de exclusão." data-step="5">Ver
                 Material</button>
-            <button onclick="OpenAddMaterial()" class="bg-blue-800 text-white px-4 py-2 rounded text-xl mx-4">Adicionar
+            <button onclick="OpenAddMaterial()" class="bg-blue-800 text-white px-4 py-2 rounded text-xl mx-4"
+                data-intro="Cadastre novos materiais no estoque por aqui" data-step="6">
+                Adicionar
                 Material</button>
         </div>
     </main>
@@ -408,6 +422,11 @@
             if (typeof modal.close === "function") modal.close();
             else modal.classList.add("hidden");
         }
+
+
+        document.getElementById("btnStart").addEventListener("click", function () {
+            introJs().start();
+        });
 
 
     </script>
