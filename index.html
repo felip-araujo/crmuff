@@ -8,6 +8,8 @@
   <link rel="icon" href="assets/image-conipa/table-cells-row-unlock-solid-full.svg" type="image/x-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+  <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class' // necessário para que .dark funcione via classe
@@ -35,6 +37,14 @@
   <a class="text-black-200 dark:text-gray-200 font-low text-xs " href="https://evoludesign.com.br/"> Desenvolvido por:
     <span class="font-bold ">Evolution Design</span> </a>
 </div>
+<div class="absolute top-4 right-4 flex items-center gap-2 mt-8">
+  <button id="btnStart" class="text-gray-700 dark:text-gray-200 font-medium"> <i class="fa-solid fa-circle-info"></i>
+    Precisa de ajuda?</button>
+</div>
+<div class="absolute bottom-2 right-4 flex items-center gap-2">
+  <a class="text-black-200 dark:text-gray-200 font-low text-xs " href="https://evoludesign.com.br/"> Desenvolvido por:
+    <span class="font-bold ">Evolution Design</span> </a>
+</div>
 
 
 <div
@@ -43,7 +53,9 @@
 
 
   <input id="re" type="number" placeholder="Digite o seu RE"
-    class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
+    class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white"
+    data-intro="Após a aprovação do seu cadastro por um administrador, você poderá acessar o sistema utilizando seu RE e senha individual."
+    data-step="2">
 
   <div class="relative mb-4">
     <input id="password" type="password" placeholder="Digite a sua Senha"
@@ -62,10 +74,11 @@
   <p id="error" class="text-red-500 text-sm mt-4 hidden">Usuário ou senha incorretos.</p>
   <div class=" border-t border-gray-400 justify-start space-x-0 mt-6">
     <button command="show-modal" commandfor="dialog" class="text-gray-600 dark:text-stone-300 text-sm
-      ">Cadastre-se</button>
+      " data-intro="Clique aqui para preencher o formulário de cadastro" data-step="1">Cadastre-se</button>
   </div>
   <button command="show-modal" commandfor="dialog-esqueci-senha" class="text-gray-600 dark:text-stone-300 text-sm
-      ">Esqueceu a senha?</button>
+      " data-intro="Se esquecer sua senha, você pode redefini-la utilizando seu RE." data-step="3">
+    Esqueceu a senha?</button>
 </div>
 
 <!-- Include this script tag or install `@tailwindplus/elements` via npm: -->
@@ -102,7 +115,7 @@
               </div>
               <div id="formulario-cadastro">
                 <input id="nome" name="nome" type="text" placeholder="Nome" required
-                  class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white mt-4"  />
+                  class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white mt-4" />
 
                 <input type="email" name="email" id="e-mail" placeholder="Email" required
                   class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white" />
@@ -113,9 +126,9 @@
                   <option value="Pedras">Pedras</option>
                   <option value="Controle de Qualidade">Controle de Qualidade </option>
                 </select>
-                <input type="number"  id="RE" name="RE" placeholder="RE:" required
+                <input type="number" id="RE" name="RE" placeholder="RE:" required
                   class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white " />
- 
+
                 <input type="text" id="senha1" name="senha1" placeholder="Senha:" required
                   class="w-full border p-2 mb-4 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 dark:placeholder-gray-400 text-gray-900 dark:text-white " />
 
@@ -234,6 +247,10 @@
     window.logoutUser = () => {
       window.location.href = "index.html";
     };
+
+    document.getElementById("btnStart").addEventListener("click", function () {
+      introJs().start();
+    });
 
 
   });
