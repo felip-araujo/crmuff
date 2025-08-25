@@ -839,3 +839,11 @@ async function excluirUserGg(id) {
     console.log("Exclusão cancelada. ID:", id);
   }
 }
+
+function registrarClick() {
+  // Se quiser enviar ID do usuário logado:
+  fetch(`/api/registrar_click.php?user_id=${userId}`).then(() => {
+    // Redireciona pro seu site depois de registrar
+    window.location.href = "https://seusite.com";
+  });
+}

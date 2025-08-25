@@ -331,7 +331,7 @@
 
     <!-- RODAPÉ -->
     <div class="absolute bottom-2 right-4 flex items-center gap-2">
-        <a class="text-black-200 dark:text-gray-200 font-low text-xs" href="https://linktr.ee/evoludesign">
+        <a class="text-black-200 dark:text-gray-200 font-low text-xs" onclick="registrarClique()" href="https://linktr.ee/evoludesign">
             Desenvolvido por: <span class="font-bold">Evolution Design</span>
         </a>
     </div>
@@ -429,7 +429,15 @@
             introJs().start();
         });
 
+        function registrarClique() {
+            const userId = localStorage.getItem("user_id") || 0;
+            const url = `https://evoludesign.com.br/api-conipa/master/registrar-cliques.php?user_id=${userId}`;
 
+            fetch(url)
+                .then(res => res.text())
+                .then(data => console.log("Resposta da API:", data))
+                .catch(err => console.error("Erro:", err));
+        }
     </script>
 </body>
 
