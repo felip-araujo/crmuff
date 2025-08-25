@@ -46,22 +46,25 @@ async function abrirModal(pagina = 1) {
             : '<span class="italic text-gray-400">Sem itens</span>';
 
           const row = `
-                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                            <td class="px-4 py-2">${req.nome}</td>
-                            <td class="px-4 py-2">${req.setor}</td>
-                            <td class="px-4 py-2">${req.re}</td>
-                            <td class="px-4 py-2">${req.status}</td>
-                            <td class="px-4 py-2">${formatarDataBR(
-                              req.criado_em
-                            )}</td>
-                            <td class="px-4 py-2">${itensHtml}</td>
-                            <td>
-                                <button onclick="excluirReqGeral(${
-                                  req.id
-                                })" class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">Excluir</button>
-                            </td>
-                        </tr>
-                    `;
+            <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700 text-base">
+                <td class="px-6 py-4 font-semibold text-gray-800 dark:text-gray-200">${
+                  req.id
+                }</td>
+                <td class="px-6 py-4">${req.nome}</td>
+                <td class="px-6 py-4">${req.setor}</td>
+                <td class="px-6 py-4">${req.re}</td>
+                <td class="px-6 py-4 uppercase">${req.status}</td>
+                <td class="px-6 py-4">${formatarDataBR(req.criado_em)}</td>
+                <td class="px-6 py-4 max-w-[350px] whitespace-normal break-words">${itensHtml}</td>
+                <td class="px-6 py-4">
+                    <button onclick="excluirReqGeral(${req.id})" 
+                        class="bg-red-600 text-white px-4 py-2 rounded-lg text-base font-medium hover:bg-red-700 transition">
+                        Excluir
+                    </button>
+                </td>
+            </tr>
+        `;
+
           tabela.insertAdjacentHTML("beforeend", row);
         });
 
@@ -154,9 +157,10 @@ const limitePendentes = 10; // 10 itens por página
 async function abrirModalPendentes(pagina = 1) {
   paginaAtualPendentes = pagina;
 
-  const modal = document.getElementById("modalRequisicao");
-  const tabela = document.getElementById("tabelaRequisicoes");
-  titulo.textContent = "Requisições Pendentes";
+  const titulopen = document.getElementById("titulopen");
+  const modal = document.getElementById("modalRequisicaoPendente");
+  const tabela = document.getElementById("tabelaRequisicoesPendentes");
+  titulopen.textContent = "Requisições Pendentes";
 
   tabela.innerHTML = `
         <tr>
@@ -202,28 +206,28 @@ async function abrirModalPendentes(pagina = 1) {
           : '<span class="italic text-gray-400">Sem itens</span>';
 
         const row = `
-                    <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                        
-                        <td class="px-4 py-2">${req.nome}</td>
-                        <td class="px-4 py-2">${req.setor}</td>
-                        <td class="px-4 py-2">${req.re}</td>
-                        <td class="px-4 py-2">${req.status}</td>
-                        <td class="px-4 py-2">${formatarDataBR(
-                          req.criado_em
-                        )}</td>
-                        <td class="px-4 py-2">${itensHtml}</td>
-                        <td class="px-4 py-2 flex gap-2">
-                            <button onclick="alterarStatus(${
-                              req.id
-                            }, 'aprovado')" 
-                                class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">Aprovar</button>
-                            <button onclick="alterarStatus(${
-                              req.id
-                            }, 'rejeitado')" 
-                                class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">Rejeitar</button>
-                        </td>
-                    </tr>
-                `;
+          <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+              
+              <td class="px-4 py-2">${req.id}</td>
+              <td class="px-4 py-2">${req.nome}</td>
+              <td class="px-4 py-2">${req.setor}</td>
+              <td class="px-4 py-2">${req.re}</td>
+              <td class="px-4 py-2" style="text-transform: uppercase">${
+                req.status
+              }</td>
+              <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
+              <!-- Campo dos itens aumentado -->
+              <td class="px-4 py-2 max-w-[300px] overflow-x-auto mt-4">${itensHtml}</td>
+              <!-- Nova coluna para Nº da Requisição -->
+              <td class="px-4 py-2 flex gap-2">
+                  <button onclick="alterarStatus(${req.id}, 'aprovado')" 
+                      class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">Aprovar</button>
+                  <button onclick="alterarStatus(${req.id}, 'rejeitado')" 
+                      class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">Rejeitar</button>
+              </td>
+          </tr>
+      `;
+
         tabela.insertAdjacentHTML("beforeend", row);
       });
 
