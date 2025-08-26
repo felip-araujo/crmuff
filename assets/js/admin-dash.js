@@ -48,7 +48,7 @@ async function abrirModal(pagina = 1) {
           const row = `
             <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700 text-base">
                 <td class="px-6 py-4 font-semibold text-gray-800 dark:text-gray-200">${
-                  req.id
+                  req.n_requisicao ? req.n_requisicao : "-"
                 }</td>
                 <td class="px-6 py-4">${req.nome}</td>
                 <td class="px-6 py-4">${req.setor}</td>
@@ -208,17 +208,23 @@ async function abrirModalPendentes(pagina = 1) {
         const row = `
           <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
               
-              <td class="px-4 py-2">${req.id}</td>
+              <!-- Input para Nº Requisição -->
+              <td class="px-4 py-2">
+                  <input type="text" id="nReq-${req.id}" 
+                         class="border border-gray-300 rounded px-2 py-1 w-24 text-sm text-center dark:bg-stone-900 dark:text-white"
+                         placeholder="Nº Req">
+              </td>
+      
               <td class="px-4 py-2">${req.nome}</td>
               <td class="px-4 py-2">${req.setor}</td>
               <td class="px-4 py-2">${req.re}</td>
-              <td class="px-4 py-2" style="text-transform: uppercase">${
-                req.status
-              }</td>
+              <td class="px-4 py-2 uppercase">${req.status}</td>
               <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
+      
               <!-- Campo dos itens aumentado -->
               <td class="px-4 py-2 max-w-[300px] overflow-x-auto mt-4">${itensHtml}</td>
-              <!-- Nova coluna para Nº da Requisição -->
+      
+              <!-- Botões -->
               <td class="px-4 py-2 flex gap-2">
                   <button onclick="alterarStatus(${req.id}, 'aprovado')" 
                       class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">Aprovar</button>
@@ -274,6 +280,8 @@ async function abrirModalPendentes(pagina = 1) {
 
 // Função para aprovar/rejeitar
 async function alterarStatus(id, status) {
+  const nRequisicao = document.getElementById(`nReq-${id}`).value || null;
+  
   try {
     const response = await fetch(
       "https://evoludesign.com.br/api-conipa/requisicoes/aprovar-requisicao.php",
@@ -283,6 +291,7 @@ async function alterarStatus(id, status) {
         body: JSON.stringify({
           id_requisicao: id,
           status_requisicao: status,
+          n_requisicao: nRequisicao,
         }),
       }
     );

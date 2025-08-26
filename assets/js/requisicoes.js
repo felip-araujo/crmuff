@@ -346,6 +346,7 @@ async function minhasRequisicoes() {
                 <th class="px-4 py-2 border-b text-left">Itens</th>
                 <th class="px-4 py-2 border-b text-left">Data</th>
                 <th class="px-4 py-2 border-b text-left">Status</th>
+                <th class="px-4 py-2 border-b text-left">Nº Requisição</th>
               </tr>
             </thead>
             <tbody class="bg-white dark:bg-gray-900">
@@ -361,6 +362,7 @@ async function minhasRequisicoes() {
           <td class="px-4 py-2 border-b">${itens}</td>
           <td class="px-4 py-2 border-b">${formatarDataBR(req.criado_em)}</td>
           <td class="px-4 py-2 border-b capitalize">${req.status}</td>
+          <td class="px-4 py-2 border-b capitalize">${req.n_requisicao}</td>
         </tr>
       `;
     });
