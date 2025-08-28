@@ -15,6 +15,30 @@
             darkMode: "class",
         };
     </script>
+
+    <style>
+        /* quando o site estiver em dark mode */
+        .dark .introjs-tooltip {
+            color: #fff !important;
+            /* deixa os textos brancos */
+            background-color: #1c1917 !important;
+            /* opcional: fundo no mesmo tom do dark (stone-950) */
+        }
+
+        .dark .introjs-tooltiptext {
+            color: #fff !important;
+        }
+
+        .dark .introjs-tooltip-title {
+            color: #fff !important;
+        }
+
+        .dark .introjs-helperLayer {
+            background: rgba(255, 255, 255, 0.1) !important;
+            /* leve contraste no overlay */
+        }
+    </style>
+
 </head>
 
 <body id="mainBody"
@@ -41,10 +65,10 @@
     </div>
 
     <!-- CONTAINER PRINCIPAL -->
-    <main class="min-h-screen flex items-center justify-center">
+    <main class="min-h-screen flex items-center justify-center ">
 
 
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 bg-white shadow-xl rounded-2xl p-10">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 bg-white shadow-xl rounded-2xl p-10  dark:bg-zinc-900">
 
             <button onclick="abrirModal()" data-intro="Aqui você pode criar uma nova requisição" data-step="1"
                 class="bg-blue-600 text-white px-5 py-2 rounded shadow hover:bg-blue-700 transition text-xl mt-4">
@@ -98,7 +122,7 @@
                     <hr class="my-4 border-gray-300 dark:border-gray-700" />
 
                     <!-- Itens -->
-                    <h4 class="font-semibold text-sm mb-2">Adicionar Item</h4>
+                    <h4 class="font-semibold text-sm mb-2  dark:text-gray-200">Adicionar Item</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <input type="text" id="codigo_material" placeholder="Código do Material"
                             class="w-full border p-2 rounded bg-white dark:bg-gray-700 text-sm dark:border-gray-600 text-gray-900 dark:text-white" />
@@ -143,6 +167,12 @@
                         <h3 id="tituloMaterial" class="text-lg font-semibold text-gray-900 dark:text-gray-100"></h3>
                         <button onclick="fecharModalMaterial()"
                             class="text-gray-500 hover:text-red-600 text-xl">&times;</button>
+                        <input type="text" id="searchMaterial" placeholder="Buscar por código ou nome..."
+                            class="border px-3 py-2 rounded w-64" />
+                        <button onclick="buscarMaterial()"
+                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            Buscar
+                        </button>
                     </div>
 
                     <!-- TABELA DE USUÁRIOS -->
@@ -170,12 +200,12 @@
                                 <!-- Linhas dinâmicas aqui -->
                             </tbody>
                         </table>
+                        <div id="paginacaoMaterial" class="flex justify-center mt-4"></div>
                     </div>
                 </div>
             </div>
         </div>
     </dialog>
-
 
     <dialog id="Pendentes"
         class="fixed inset-0 z-50 max-h-none max-w-none overflow-y-auto bg-transparent backdrop:bg-transparent">
@@ -188,7 +218,7 @@
         <!-- CONTEÚDO DO MODAL -->
         <div tabindex="0" class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
             <div
-                class="relative z-10 transform overflow-hidden rounded-lg bg-white dark:bg-stone-950 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+                class="relative z-10 transform overflow-hidden rounded-lg bg-white dark:bg-stone-950 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl max-h-[200vh] overflow-y-auto">
 
                 <div class="bg-white dark:bg-stone-950 px-6 pt-6 pb-6 sm:p-6">
                     <div class="flex items-center justify-between mb-4">

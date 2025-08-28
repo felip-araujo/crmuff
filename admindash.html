@@ -15,6 +15,30 @@
             darkMode: "class",
         };
     </script>
+
+    <style>
+        /* quando o site estiver em dark mode */
+        .dark .introjs-tooltip {
+            color: #fff !important;
+            /* deixa os textos brancos */
+            background-color: #1c1917 !important;
+            /* opcional: fundo no mesmo tom do dark (stone-950) */
+        }
+
+        .dark .introjs-tooltiptext {
+            color: #fff !important;
+        }
+
+        .dark .introjs-tooltip-title {
+            color: #fff !important;
+        }
+
+        .dark .introjs-helperLayer {
+            background: rgba(255, 255, 255, 0.1) !important;
+            /* leve contraste no overlay */
+        }
+    </style>
+
 </head>
 
 <body id="mainBody"
