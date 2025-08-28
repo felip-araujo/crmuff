@@ -50,18 +50,25 @@ async function abrirModal(pagina = 1) {
                 <td class="px-6 py-4 font-semibold text-gray-800 dark:text-gray-200">${
                   req.n_requisicao ? req.n_requisicao : "-"
                 }</td>
-                <td class="px-6 py-4">${req.nome}</td>
-                <td class="px-6 py-4">${req.setor}</td>
-                <td class="px-6 py-4">${req.re}</td>
-                <td class="px-6 py-4 uppercase">${req.status}</td>
-                <td class="px-6 py-4">${formatarDataBR(req.criado_em)}</td>
-                <td class="px-6 py-4 max-w-[350px] whitespace-normal break-words">${itensHtml}</td>
-                <td class="px-6 py-4">
+                <td class="px-4 py-2">${req.nome}</td>
+                <td class="px-4 py-2">${req.setor}</td>
+                <td class="px-4 py-2">${req.re}</td>
+                <td class="px-4 py-2 uppercase">${req.status}</td>
+                <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
+                <td class="px-4 py-2 max-w-[350px] whitespace-normal break-words">${itensHtml}</td>
+                <td class="px-4 py-2">
                     <button onclick="excluirReqGeral(${req.id})" 
                         class="bg-red-600 text-white px-4 py-2 rounded-lg text-base font-medium hover:bg-red-700 transition">
                         Excluir
                     </button>
                 </td>
+                <td class="px-4 py-2 text-center">
+                  <input type="checkbox" 
+                         ${req.pago == 1 ? "checked" : ""} 
+                         onchange="atualizarPagamento(${
+                           req.id
+                         }, this.checked ? 1 : 0)">
+              </td>
             </tr>
         `;
 
@@ -223,6 +230,8 @@ async function abrirModalPendentes(pagina = 1) {
       
               <!-- Campo dos itens aumentado -->
               <td class="px-4 py-2 max-w-[300px] overflow-x-auto mt-4">${itensHtml}</td>
+
+              
       
               <!-- Botões -->
               <td class="px-4 py-2 flex gap-2">
@@ -230,6 +239,14 @@ async function abrirModalPendentes(pagina = 1) {
                       class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">Aprovar</button>
                   <button onclick="alterarStatus(${req.id}, 'rejeitado')" 
                       class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">Rejeitar</button>
+              </td>
+
+                 <td class="px-4 py-2 text-center">
+                  <input type="checkbox" 
+                         ${req.pago == 1 ? "checked" : ""} 
+                         onchange="atualizarPagamento(${
+                           req.id
+                         }, this.checked ? 1 : 0)">
               </td>
           </tr>
       `;
@@ -278,6 +295,36 @@ async function abrirModalPendentes(pagina = 1) {
   }
 }
 
+async function atualizarPagamento(id, pago) {
+  try {
+    const response = await fetch(
+      "https://evoludesign.com.br/api-conipa/requisicoes/pago.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: id,
+          pago: pago,
+        }),
+      }
+    );
+
+    const result = await response.json();
+
+    if (response.ok && result.sucesso) {
+      console.log("Pagamento atualizado:", result.mensagem);
+    } else {
+      alert(result.erro || "Erro ao atualizar pagamento.");
+      // recarrega a tabela pra não deixar checkbox errado
+      abrirModalPendentes(paginaAtualPendentes);
+    }
+  } catch (error) {
+    console.error("Erro no fetch:", error);
+    alert("Erro na comunicação com a API.");
+    abrirModalPendentes(paginaAtualPendentes);
+  }
+}
+
 // Função para aprovar/rejeitar
 async function alterarStatus(id, status) {
   const nRequisicao = document.getElementById(`nReq-${id}`).value || null;
@@ -319,7 +366,7 @@ async function UsuariosPendentes(pagina = 1) {
 
   const modal = document.getElementById("modalUsuariosPendentes");
   const tabela = document.getElementById("tabelaUsuariosPendentes");
-  const titulo2 = document.getElementById("tituloUsuarios");
+  const titulo2 = document.getElementById("tituloUsuariosPendentes");
   titulo2.textContent = "Pré-Cadastro de Usuários";
 
   tabela.innerHTML = `
@@ -598,7 +645,11 @@ function renderPaginacao(paginaAtual, totalPaginas, search = "") {
   // Botões numéricos
   for (let i = inicio; i <= fim; i++) {
     paginacaoContainer.innerHTML += `
-      <button class="px-3 py-1 mx-1 ${i === paginaAtual ? 'bg-blue-600 text-white' : 'bg-gray-300 hover:bg-gray-400'} rounded"
+      <button class="px-3 py-1 mx-1 ${
+        i === paginaAtual
+          ? "bg-blue-600 text-white"
+          : "bg-gray-300 hover:bg-gray-400"
+      } rounded"
         onclick="verMaterial(${i}, '${search}')">${i}</button>
     `;
   }
@@ -612,12 +663,10 @@ function renderPaginacao(paginaAtual, totalPaginas, search = "") {
   }
 }
 
-
 function buscarMaterial() {
   const search = document.getElementById("searchMaterial").value;
   verMaterial(1, search);
 }
-
 
 function copiarCodigo(codigo) {
   navigator.clipboard
@@ -761,7 +810,7 @@ async function usuariosGeral(pagina = 1) {
                         
                         <td class="px-4 py-2">${user.nome}</td>
                         <td class="px-4 py-2">${user.email}</td>
-                        <td class="px-4 py-2">${user.tipo}</td>
+                        <td class="px-4 py-2 uppercase">${user.tipo}</td>
                         <td>
                                 <button onclick=" excluirUserGg(${user.id})" class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">Excluir</button>
                             </td>

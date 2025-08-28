@@ -621,7 +621,7 @@ async function RequisicoesPendentes() {
           
           <td class="px-4 py-2">${itens}</td>
           <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
-          <td class="px-4 py-2">${req.status}</td>
+          <td class="px-4 py-2 uppercase">${req.status}</td>
           
         </tr>
       `;
