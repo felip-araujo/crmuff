@@ -1,6 +1,7 @@
 tipo = localStorage.getItem("tipo");
 token = localStorage.getItem("token");
-authApi = "https://evoludesign.com.br/api-conipa/auth/auth.php";
+authApi = "https://evoludesign.com.br/api-conipa/auth/auth-user.php";
+
 
 async function verifi() {
   try {
@@ -11,12 +12,16 @@ async function verifi() {
 
     if (!response.ok) {
       logout();
+      console.log(response)
+    
+    } else {
+        console.log(response)
     }
   } catch (e) {}
 }
 
 verifi();
-if (tipo !== "admin" || tipo == null || token == null) {
+if (tipo !== 'usuario' || tipo == null || token == null) {
   logout();
 }
 
