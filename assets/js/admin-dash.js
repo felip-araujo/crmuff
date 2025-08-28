@@ -460,7 +460,6 @@ async function atualizarStatus(userId) {
   const acao = document.getElementById(`acao_${userId}`).value;
   const tipo = document.getElementById(`tipo_${userId}`).value;
 
-   
   try {
     const response = await fetch(Api + "/usuarios/aprovar_pre_cadastro.php", {
       method: "POST",
@@ -491,7 +490,7 @@ async function atualizarStatus(userId) {
 let paginaMaterial = 1;
 const limiteMaterial = 10;
 
-async function verMaterial(pagina = 1) {
+async function verMaterial(pagina = 1, search = "") {
   paginaMaterial = pagina;
 
   const tituloMaterial = document.getElementById("tituloMaterial");
@@ -506,113 +505,62 @@ async function verMaterial(pagina = 1) {
     `;
 
   try {
-    const response = await fetch(
-      `https://evoludesign.com.br/api-conipa/material/listar-material.php?page=${paginaMaterial}&limite=${limiteMaterial}`
-    );
+    let url = `https://evoludesign.com.br/api-conipa/material/listar-material.php?page=${paginaMaterial}&limite=${limiteMaterial}`;
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
+
+    const response = await fetch(url);
     const data = await response.json();
 
     if (data.success) {
       if (!data.data || data.data.length === 0) {
         tabela.innerHTML = `
-                    <tr>
-                        <td colspan="8" class="p-4 text-center italic text-gray-500">Nenhum material encontrado.</td>
-                    </tr>
-                `;
+            <tr>
+                <td colspan="8" class="p-4 text-center italic text-gray-500">Nenhum material encontrado.</td>
+            </tr>
+        `;
       } else {
         tabela.innerHTML = "";
 
         data.data.forEach((mat) => {
           const row = `
-                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                            <td class="px-4 py-2">${mat.codigo}</td>
-                            <td class="px-4 py-2">${mat.descricao}</td>
-                            <td class="px-4 py-2">${mat.grupo}</td>
-                            <td>
-                              <button onclick="excluirMaterial(${mat.id})" 
-        class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">
-    Excluir
-</button>
-
-                                <button onclick="copiarCodigo('${mat.codigo}')" 
-        class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">
-    Copiar Código
-</button>
-
-                            </td>
-                        </tr>
-                    `;
+            <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <td class="px-4 py-2">${mat.codigo}</td>
+                <td class="px-4 py-2">${mat.descricao}</td>
+                <td class="px-4 py-2">${mat.grupo}</td>
+                <td>
+                  <button onclick="excluirMaterial(${mat.id})" 
+                          class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">
+                      Excluir
+                  </button>
+                  <button onclick="copiarCodigo('${mat.codigo}')" 
+                          class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">
+                      Copiar Código
+                  </button>
+                </td>
+            </tr>
+          `;
           tabela.insertAdjacentHTML("beforeend", row);
         });
 
-        // Paginação compacta (máx 5 páginas)
-        const totalPaginas = data.total_pages;
-        const paginaAtual = data.page;
-        const maxPaginasVisiveis = 5;
-
-        let inicioPagina = Math.max(
-          1,
-          paginaAtual - Math.floor(maxPaginasVisiveis / 2)
-        );
-        let fimPagina = inicioPagina + maxPaginasVisiveis - 1;
-
-        if (fimPagina > totalPaginas) {
-          fimPagina = totalPaginas;
-          inicioPagina = Math.max(1, fimPagina - maxPaginasVisiveis + 1);
-        }
-
-        let paginacaoHTML = `<tr><td colspan="8" class="px-4 py-2 text-center"><div class="flex justify-center gap-2 mt-4">`;
-
-        // Botão Anterior
-        if (paginaAtual > 1) {
-          paginacaoHTML += `
-                        <button onclick="verMaterial(${paginaAtual - 1})"
-                                class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 dark:text-white">
-                            Anterior
-                        </button>
-                    `;
-        }
-
-        // Botões de páginas
-        for (let i = inicioPagina; i <= fimPagina; i++) {
-          paginacaoHTML += `
-                        <button onclick="verMaterial(${i})"
-                                class="px-3 py-1 rounded ${
-                                  i === paginaAtual
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-gray-200 dark:bg-gray-600 dark:text-white"
-                                }">
-                            ${i}
-                        </button>
-                    `;
-        }
-
-        // Botão Próximo
-        if (paginaAtual < totalPaginas) {
-          paginacaoHTML += `
-                        <button onclick="verMaterial(${paginaAtual + 1})"
-                                class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 dark:text-white">
-                            Próximo
-                        </button>
-                    `;
-        }
-
-        paginacaoHTML += `</div></td></tr>`;
-        tabela.insertAdjacentHTML("beforeend", paginacaoHTML);
+        // 🔹 Renderizar paginação (nova parte)
+        renderPaginacao(data.page, data.total_pages, search);
       }
     } else {
       tabela.innerHTML = `
-                <tr>
-                    <td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar dados da API.</td>
-                </tr>
-            `;
+        <tr>
+            <td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar dados da API.</td>
+        </tr>
+      `;
     }
   } catch (error) {
     console.error("Erro ao buscar dados:", error);
     tabela.innerHTML = `
-            <tr>
-                <td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar materiais.</td>
-            </tr>
-        `;
+        <tr>
+            <td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar materiais.</td>
+        </tr>
+    `;
   }
 
   // Abrir modal
@@ -622,6 +570,54 @@ async function verMaterial(pagina = 1) {
     modal.classList.remove("hidden");
   }
 }
+
+// Função de paginação dinâmica (máx. 5 botões)
+function renderPaginacao(paginaAtual, totalPaginas, search = "") {
+  const paginacaoContainer = document.getElementById("paginacaoMaterial");
+  paginacaoContainer.innerHTML = "";
+
+  if (totalPaginas <= 1) return;
+
+  const maxBotoes = 5;
+  let inicio = Math.max(1, paginaAtual - Math.floor(maxBotoes / 2));
+  let fim = inicio + maxBotoes - 1;
+
+  if (fim > totalPaginas) {
+    fim = totalPaginas;
+    inicio = Math.max(1, fim - maxBotoes + 1);
+  }
+
+  // Botão Anterior
+  if (paginaAtual > 1) {
+    paginacaoContainer.innerHTML += `
+      <button class="px-3 py-1 mx-1 bg-gray-300 rounded hover:bg-gray-400"
+        onclick="verMaterial(${paginaAtual - 1}, '${search}')">Anterior</button>
+    `;
+  }
+
+  // Botões numéricos
+  for (let i = inicio; i <= fim; i++) {
+    paginacaoContainer.innerHTML += `
+      <button class="px-3 py-1 mx-1 ${i === paginaAtual ? 'bg-blue-600 text-white' : 'bg-gray-300 hover:bg-gray-400'} rounded"
+        onclick="verMaterial(${i}, '${search}')">${i}</button>
+    `;
+  }
+
+  // Botão Próximo
+  if (paginaAtual < totalPaginas) {
+    paginacaoContainer.innerHTML += `
+      <button class="px-3 py-1 mx-1 bg-gray-300 rounded hover:bg-gray-400"
+        onclick="verMaterial(${paginaAtual + 1}, '${search}')">Próximo</button>
+    `;
+  }
+}
+
+
+function buscarMaterial() {
+  const search = document.getElementById("searchMaterial").value;
+  verMaterial(1, search);
+}
+
 
 function copiarCodigo(codigo) {
   navigator.clipboard
