@@ -281,7 +281,7 @@ async function abrirModalPendentes(pagina = 1) {
 // Função para aprovar/rejeitar
 async function alterarStatus(id, status) {
   const nRequisicao = document.getElementById(`nReq-${id}`).value || null;
-  
+
   try {
     const response = await fetch(
       "https://evoludesign.com.br/api-conipa/requisicoes/aprovar-requisicao.php",
@@ -460,6 +460,7 @@ async function atualizarStatus(userId) {
   const acao = document.getElementById(`acao_${userId}`).value;
   const tipo = document.getElementById(`tipo_${userId}`).value;
 
+   
   try {
     const response = await fetch(Api + "/usuarios/aprovar_pre_cadastro.php", {
       method: "POST",
@@ -476,7 +477,10 @@ async function atualizarStatus(userId) {
       alert("Usuário atualizado com sucesso!");
       UsuariosPendentes(); // recarrega a lista
     } else {
-      alert("Erro: " + data.message);
+      alert(
+        "Erro: " +
+          (data.erro || data.mensagem || "Ocorreu um erro desconhecido.")
+      );
     }
   } catch (error) {
     console.error("Erro ao atualizar usuário:", error);
