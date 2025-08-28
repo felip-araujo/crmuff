@@ -10,11 +10,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
     <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+    <script src="assets/js/auth.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: "class",
         };
     </script>
+    <!-- 
+    <style>
+        body {
+            display: none;
+        }
+    </style> -->
 
     <style>
         /* quando o site estiver em dark mode */
@@ -54,7 +62,7 @@
                 </div>
             </div>
         </label>
-        <a class="" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+        <a class="" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
     </div>
     <div class="absolute top-4 right-4 flex items-center gap-2 mt-8">
         <button id="btnStart" class="text-gray-700 dark:text-gray-200 font-medium"> <i
@@ -115,7 +123,8 @@
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
                             <thead class="bg-gray-100 dark:bg-gray-800">
                                 <tr>
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Número</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">
+                                        Número</th>
                                     <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Nome
                                     </th>
                                     <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Setor
@@ -168,7 +177,8 @@
                         <table class="table-auto w-full divide-y divide-gray-200 dark:divide-gray-700 text-base">
                             <thead class="bg-gray-100 dark:bg-gray-800">
                                 <tr>
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Número</th>
+                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">
+                                        Número</th>
                                     <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Nome
                                     </th>
                                     <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Setor
@@ -181,7 +191,7 @@
                                         Data</th>
                                     <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Itens
                                     </th>
-                                    
+
                                     <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Ação
                                     </th>
                                     <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Pago
@@ -266,7 +276,8 @@
 
                 <div class="bg-white dark:bg-stone-950 px-6 pt-6 pb-6 sm:p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 id="tituloUsuariosPendentes" class="text-lg font-semibold text-gray-900 dark:text-gray-100"></h3>
+                        <h3 id="tituloUsuariosPendentes" class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        </h3>
                         <button onclick="fecharModalUsuarios()"
                             class="text-gray-500 hover:text-red-600 text-xl">&times;</button>
                     </div>
@@ -419,6 +430,7 @@
     <script src="assets/js/admin-dash.js"></script>
     <!-- JS -->
     <script>
+
         document.addEventListener("DOMContentLoaded", () => {
             const toggle = document.getElementById("toggleDarkMode");
             const html = document.documentElement;

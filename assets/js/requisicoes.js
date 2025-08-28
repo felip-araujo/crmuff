@@ -1,3 +1,4 @@
+
 let itensRequisicao = [];
 
 document.addEventListener("DOMContentLoaded", () => {

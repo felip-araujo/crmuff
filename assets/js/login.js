@@ -30,7 +30,6 @@ async function login() {
 
     const data = await response.json();
     console.log("Login:", data);
-   
 
     if (!response.ok) {
       throw new Error(data.erro || "Erro ao fazer login");
@@ -39,7 +38,9 @@ async function login() {
     // Armazena os dados no localStorage (opcional)
     localStorage.setItem("usuario", JSON.stringify(data.usuario));
     localStorage.setItem("user_id", data.usuario.id);
-    console.log(data.usuario.id);
+    localStorage.setItem("tipo", data.usuario.tipo);
+    localStorage.setItem("token", data.token);
+    console.log(data.usuario.id, data.usuario.tipo, data.token);
 
     // window.location.href = "requisicoes.html"; // pode ser na Vercel
 
