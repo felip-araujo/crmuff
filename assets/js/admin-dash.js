@@ -1,6 +1,3 @@
-
-
-
 const titulo = document.getElementById("titulo");
 const Api = "https://evoludesign.com.br/api-conipa";
 
@@ -164,7 +161,7 @@ async function excluirReqGeral(id) {
 let paginaAtualPendentes = 1;
 const limitePendentes = 10; // 10 itens por página
 
-async function abrirModalPendentes(pagina = 1) {
+async function abrirModalPendentes(pagina = 1, filtros = {}) {
   paginaAtualPendentes = pagina;
 
   const titulopen = document.getElementById("titulopen");
@@ -179,9 +176,17 @@ async function abrirModalPendentes(pagina = 1) {
     `;
 
   try {
-    const response = await fetch(
-      `https://evoludesign.com.br/api-conipa/requisicoes/pendentes.php?pagina=${pagina}&limite=${limitePendentes}`
-    );
+    // Monta a querystring com pagina, limite e filtros
+    let url = `https://evoludesign.com.br/api-conipa/requisicoes/pendentes.php?pagina=${pagina}&limite=${limitePendentes}`;
+
+    if (filtros.setor) url += `&setor=${encodeURIComponent(filtros.setor)}`;
+    if (filtros.usuario) url += `&nome=${encodeURIComponent(filtros.usuario)}`;
+    if (filtros.data_inicial)
+      url += `&data_inicial=${encodeURIComponent(filtros.data_inicial)}`;
+    if (filtros.data_final)
+      url += `&data_final=${encodeURIComponent(filtros.data_final)}`;
+
+    const response = await fetch(url);
     const data = await response.json();
 
     if (!data.success) {
@@ -218,7 +223,6 @@ async function abrirModalPendentes(pagina = 1) {
         const row = `
           <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
               
-              <!-- Input para Nº Requisição -->
               <td class="px-4 py-2">
                   <input type="text" id="nReq-${req.id}" 
                          class="border border-gray-300 rounded px-2 py-1 w-24 text-sm text-center dark:bg-stone-900 dark:text-white"
@@ -231,12 +235,8 @@ async function abrirModalPendentes(pagina = 1) {
               <td class="px-4 py-2 uppercase">${req.status}</td>
               <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
       
-              <!-- Campo dos itens aumentado -->
-              <td class="px-4 py-2 max-w-[300px] overflow-x-auto mt-4">${itensHtml}</td>
+              <td class="px-4 py-2 max-w-full overflow-x-auto mt-4 ">${itensHtml}</td>
 
-              
-      
-              <!-- Botões -->
               <td class="px-4 py-2 flex gap-2">
                   <button onclick="alterarStatus(${req.id}, 'aprovado')" 
                       class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">Aprovar</button>
@@ -244,7 +244,7 @@ async function abrirModalPendentes(pagina = 1) {
                       class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">Rejeitar</button>
               </td>
 
-                 <td class="px-4 py-2 text-center">
+              <td class="px-4 py-2 text-center">
                   <input type="checkbox" 
                          ${req.pago == 1 ? "checked" : ""} 
                          onchange="atualizarPagamento(${
@@ -257,25 +257,47 @@ async function abrirModalPendentes(pagina = 1) {
         tabela.insertAdjacentHTML("beforeend", row);
       });
 
-      // Paginação
+      // Paginação (mantendo filtros)
       let paginacaoHTML = `<tr><td colspan="8" class="p-4 text-center"><div class="flex justify-center gap-2">`;
 
+      // Botão Anterior
       if (paginaAtualPendentes > 1) {
-        paginacaoHTML += `<button onclick="abrirModalPendentes(${
+        paginacaoHTML += `<button onclick='abrirModalPendentes(${
           paginaAtualPendentes - 1
-        })" class="px-3 py-1 bg-gray-300 rounded">Anterior</button>`;
+        }, ${JSON.stringify(
+          filtros
+        )})' class="px-3 py-1 bg-gray-300 rounded">Anterior</button>`;
       }
 
-      for (let i = 1; i <= totalPaginas; i++) {
-        paginacaoHTML += `<button onclick="abrirModalPendentes(${i})" class="px-3 py-1 rounded ${
+      // Definindo range de páginas visíveis (máx 5)
+      let maxBotoes = 5;
+      let startPage = Math.max(
+        1,
+        paginaAtualPendentes - Math.floor(maxBotoes / 2)
+      );
+      let endPage = startPage + maxBotoes - 1;
+
+      if (endPage > totalPaginas) {
+        endPage = totalPaginas;
+        startPage = Math.max(1, endPage - maxBotoes + 1);
+      }
+
+      // Botões das páginas
+      for (let i = startPage; i <= endPage; i++) {
+        paginacaoHTML += `<button onclick='abrirModalPendentes(${i}, ${JSON.stringify(
+          filtros
+        )})' class="px-3 py-1 rounded ${
           i === paginaAtualPendentes ? "bg-blue-600 text-white" : "bg-gray-200"
-        }">${i}</button>`;
+        }'>${i}</button>`;
       }
 
+      // Botão Próxima
       if (paginaAtualPendentes < totalPaginas) {
-        paginacaoHTML += `<button onclick="abrirModalPendentes(${
+        paginacaoHTML += `<button onclick='abrirModalPendentes(${
           paginaAtualPendentes + 1
-        })" class="px-3 py-1 bg-gray-300 rounded">Próxima</button>`;
+        }, ${JSON.stringify(
+          filtros
+        )})' class="px-3 py-1 bg-gray-300 rounded">Próxima</button>`;
       }
 
       paginacaoHTML += `</div></td></tr>`;
@@ -296,6 +318,26 @@ async function abrirModalPendentes(pagina = 1) {
             </tr>
         `;
   }
+}
+
+function aplicarFiltrosPendentes() {
+  const filtros = {
+    setor: document.getElementById("filtroSetor").value,
+    usuario: document.getElementById("filtroUsuario").value,
+    data_inicial: document.getElementById("filtroDataInicial").value,
+    data_final: document.getElementById("filtroDataFinal").value,
+  };
+
+  abrirModalPendentes(1, filtros);
+}
+
+function resetarFiltrosPendentes() {
+  document.getElementById("filtroSetor").value = "";
+  document.getElementById("filtroUsuario").value = "";
+  document.getElementById("filtroDataInicial").value = "";
+  document.getElementById("filtroDataFinal").value = "";
+
+  abrirModalPendentes(1, {}); // volta sem filtro
 }
 
 async function atualizarPagamento(id, pago) {
