@@ -481,15 +481,11 @@ async function verMaterial(pagina = 1, search = "") {
         data.data.forEach((mat) => {
           const row = `
             <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <td class="px-4 py-2"><input type="checkbox"></td>
                 <td class="px-4 py-2">${mat.codigo}</td>
                 <td class="px-4 py-2">${mat.descricao}</td>
                 <td class="px-4 py-2">${mat.grupo}</td>
-                <td>
-                  <button onclick="copiarCodigo('${mat.codigo}')" 
-                          class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">
-                      Copiar Código
-                  </button>
-                </td>
+                <td class="px-2 py-2"><input type="number"></td>
             </tr>
           `;
           tabela.insertAdjacentHTML("beforeend", row);
