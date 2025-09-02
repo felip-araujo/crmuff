@@ -113,7 +113,7 @@ async function preCadastro() {
 
   try {
     const response = await fetch(
-      "https://evoludesign.com.br/api-conipa/auth/pre-cadastro.php",
+      `${API_BASE}auth/pre-cadastro.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -132,6 +132,10 @@ async function preCadastro() {
     console.error("erro", err);
   }
 }
+
+window.preCadastro = preCadastro;
+
+
 
 async function trocarSenha() {
   const sucesso = document.getElementById("sucesso");
