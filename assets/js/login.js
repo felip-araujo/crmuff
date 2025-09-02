@@ -1,4 +1,6 @@
-function togglePassword() {
+import { API_BASE } from "../js/config/config.js";
+
+async function togglePassword() {
   const passwordInput = document.getElementById("password");
   const eyeIcon = document.getElementById("eye-icon");
 
@@ -13,6 +15,9 @@ function togglePassword() {
   }
 }
 
+// export {togglePassword}
+window.togglePassword = togglePassword;
+
 async function login() {
   const re = document.getElementById("re").value;
   const senha = document.getElementById("password").value;
@@ -20,7 +25,8 @@ async function login() {
 
   try {
     const response = await fetch(
-      "https://evoludesign.com.br/api-conipa/auth/login.php",
+      // "https://evoludesign.com.br/api-conipa/auth/login.php",
+      `${API_BASE}auth/login.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -56,6 +62,8 @@ async function login() {
     error.classList.remove("hidden");
   }
 }
+
+window.login = login;
 
 async function preCadastro() {
   const nome = document.getElementById("nome").value;
@@ -143,7 +151,8 @@ async function trocarSenha() {
 
   try {
     const response = await fetch(
-      "https://evoludesign.com.br/api-conipa/auth/recuperar-senha.php",
+      // "https://evoludesign.com.br/api-conipa/auth/recuperar-senha.php",
+      `${API_BASE}auth/recuperar-senha.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -165,3 +174,5 @@ async function trocarSenha() {
     erro.classList.remove("hidden");
   }
 }
+
+window.trocarSenha = trocarSenha;
