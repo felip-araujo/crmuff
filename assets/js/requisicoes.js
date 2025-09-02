@@ -1,3 +1,5 @@
+import { API_BASE } from "../js/config/config.js";
+
 
 let itensRequisicao = [];
 
@@ -235,7 +237,7 @@ async function enviarRequisicao() {
 }
 
 // 📦 Modal
-function abrirModal() {
+async function abrirModal() {
   const modal = document.getElementById("modalRequisicao");
   if (typeof modal.showModal === "function") {
     modal.showModal();
@@ -244,7 +246,12 @@ function abrirModal() {
   }
 }
 
-function fecharModal() {
+window.abrirModal = abrirModal;
+
+
+
+
+async function fecharModal() {
   const modal = document.getElementById("modalRequisicao");
   if (typeof modal.close === "function") {
     modal.close();
@@ -252,6 +259,8 @@ function fecharModal() {
     modal.classList.add("hidden");
   }
 }
+
+window.fecharModal = fecharModal;
 
 
 function formatarDataBR(dataStr) {
