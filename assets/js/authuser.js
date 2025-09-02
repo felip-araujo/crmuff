@@ -1,6 +1,11 @@
-tipo = localStorage.getItem("tipo");
-token = localStorage.getItem("token");
-authApi = "https://evoludesign.com.br/api-conipa/auth/auth-user.php";
+import { API_BASE } from "../js/config/config.js";
+
+
+const tipo = localStorage.getItem("tipo");
+const token = localStorage.getItem("token");
+const authApi = `${API_BASE}auth/auth-user.php`;
+// authApi = "https://evoludesign.com.br/api-conipa/auth/auth-user.php";
+
 
 
 async function verifi() {
@@ -11,6 +16,7 @@ async function verifi() {
     });
 
     if (!response.ok) {
+      
       logout();
       console.log(response)
     
@@ -25,10 +31,12 @@ if (tipo !== 'usuario' || tipo == null || token == null) {
   logout();
 }
 
-function logout() {
+async function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("tipo");
   localStorage.removeItem("usuario");
   localStorage.removeItem("user_id");
   window.location.href = "index.html";
 }
+
+window.logout = logout;
