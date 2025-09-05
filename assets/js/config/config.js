@@ -1,1 +1,1 @@
-export const API_BASE = "https://evoludesign.com.br/api-conipa/";
+export const API_BASE = "https://iachecker.com.br/api-conipa/"

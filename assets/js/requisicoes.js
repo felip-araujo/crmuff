@@ -85,7 +85,8 @@ async function buscarMaterialPorCodigo(codigo) {
 
   try {
     const response = await fetch(
-      "https://evoludesign.com.br/api-conipa/material/material-por-id.php",
+      // "https://evoludesign.com.br/api-conipa/material/material-por-id.php",
+      `${API_BASE}/material/material-por-id.php`,
       {
         method: "POST",
         headers: {
@@ -107,6 +108,9 @@ async function buscarMaterialPorCodigo(codigo) {
   }
 }
 
+window.buscarMaterialPorCodigo = buscarMaterialPorCodigo;
+
+
 // 💬 Mostrar info do material corretamente
 function mostrarInfoMaterial(material) {
   let divInfo = document.getElementById("infoMaterial");
@@ -127,14 +131,18 @@ function mostrarInfoMaterial(material) {
             `;
 }
 
+window.mostrarInfoMaterial = mostrarInfoMaterial;
+
 // 🧼 Limpar info do material
 function limparInfoMaterial() {
   const divInfo = document.getElementById("infoMaterial");
   if (divInfo) divInfo.remove();
 }
 
+window.limparInfoMaterial = limparInfoMaterial;
+
 // ➕ Adicionar item
-function adicionarItem() {
+async function adicionarItem() {
   const lista = document.getElementById("listaItens");
   const cod = document.getElementById("codigo_material").value;
   const qtd = document.getElementById("quantidade_item").value;
@@ -157,6 +165,9 @@ function adicionarItem() {
     limparInfoMaterial();
   }
 }
+
+window.adicionarItem = adicionarItem;
+
 
 async function enviarRequisicao() {
   const sucesso = document.getElementById("sucesso");
@@ -206,7 +217,8 @@ async function enviarRequisicao() {
     };
 
     const response = await fetch(
-      "https://evoludesign.com.br/api-conipa/requisicoes/criar.php",
+      // "https://evoludesign.com.br/api-conipa/requisicoes/criar.php",
+      `${API_BASE}requisicoes/criar.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -220,7 +232,7 @@ async function enviarRequisicao() {
       erro.textContent = data.erro || "Erro ao enviar a requisição.";
       erro.classList.remove("hidden");
     } else {
-      sucesso.textContent = data.mensagem || "Requisição enviada com sucesso!";
+      sucesso.textContent = "Requisição enviada com sucesso!";
       sucesso.classList.remove("hidden");
 
       // Limpar lista de itens e inputs
@@ -235,6 +247,8 @@ async function enviarRequisicao() {
     erro.classList.remove("hidden");
   }
 }
+
+window.enviarRequisicao = enviarRequisicao;
 
 // 📦 Modal
 async function abrirModal() {
@@ -270,9 +284,7 @@ function formatarDataBR(dataStr) {
   return `${dia}-${mes}-${ano}`;
 }
 
-
-
-
+window.formatarDataBR = formatarDataBR;
 
 
 let paginaAtual = 1;
@@ -291,7 +303,8 @@ async function minhasRequisicoes() {
 
   try {
     // Monta a URL com paginação e filtros
-    let url = `https://evoludesign.com.br/api-conipa/requisicoes/minhas-requisicoes.php?id_usuario=${usuario.id}&pagina=${paginaAtual}&limite=5`;
+    // let url = `https://evoludesign.com.br/api-conipa/requisicoes/minhas-requisicoes.php?id_usuario=${usuario.id}&pagina=${paginaAtual}&limite=5`;
+    let url = `${API_BASE}requisicoes/minhas-requisicoes.php?id_usuario=${usuario.id}&pagina=${paginaAtual}&limite=5`;
     if (buscaCodigo) url += `&codigo=${encodeURIComponent(buscaCodigo)}`;
     if (buscaData) url += `&data=${encodeURIComponent(buscaData)}`;
 
@@ -414,12 +427,16 @@ async function minhasRequisicoes() {
   }
 }
 
+window.minhasRequisicoes = minhasRequisicoes;
+
 // Funções auxiliares
-function aplicarBuscaCodigo(valor) {
+async function aplicarBuscaCodigo(valor) {
   buscaCodigo = valor;
   paginaAtual = 1;
   minhasRequisicoes();
 }
+
+window.aplicarBuscaCodigo = aplicarBuscaCodigo;
 
 function aplicarBuscaData(valor) {
   buscaData = valor;
@@ -446,10 +463,15 @@ async function mostrarHistórico() {
   container.classList.remove("hidden");
 }
 
+window.mostrarHistórico = mostrarHistórico;
+
 async function fecharHistorico() {
   const container = document.getElementById("minhasRequisicoes");
   container.classList.add("hidden");
 }
+
+window.fecharHistorico = fecharHistorico;
+
 
 let paginaMaterial = 1;
 const limiteMaterial = 10;
@@ -469,7 +491,8 @@ async function verMaterial(pagina = 1, search = "") {
     `;
 
   try {
-    let url = `https://evoludesign.com.br/api-conipa/material/listar-material.php?page=${paginaMaterial}&limite=${limiteMaterial}`;
+    // let url = `https://evoludesign.com.br/api-conipa/material/listar-material.php?page=${paginaMaterial}&limite=${limiteMaterial}`;
+    let url = `${API_BASE}material/listar-material.php?page=${paginaMaterial}&limite=${limiteMaterial}`;
     if (search) {
       url += `&search=${encodeURIComponent(search)}`;
     }
@@ -531,6 +554,8 @@ async function verMaterial(pagina = 1, search = "") {
   }
 }
 
+window.verMaterial = verMaterial;
+
 // Função de paginação dinâmica (máx. 5 botões)
 function renderPaginacao(paginaAtual, totalPaginas, search = "") {
   const paginacaoContainer = document.getElementById("paginacaoMaterial");
@@ -578,6 +603,8 @@ function buscarMaterial() {
   verMaterial(1, search);
 }
 
+window.buscarMaterial = buscarMaterial;
+
 function copiarCodigo(codigo) {
   navigator.clipboard
     .writeText(codigo)
@@ -589,6 +616,10 @@ function copiarCodigo(codigo) {
       alert("Não foi possível copiar o código.");
     });
 }
+
+
+window.copiarCodigo = copiarCodigo;
+
 
 let paginaPendentes = 1;
 const limitePendentes = 5;
@@ -610,7 +641,8 @@ async function RequisicoesPendentes() {
 
   try {
     const response = await fetch(
-      `https://evoludesign.com.br/api-conipa/requisicoes/minhas-pendentes.php?id_usuario=${usuario.id}&pagina=${paginaPendentes}&limite=${limitePendentes}`
+      // `https://evoludesign.com.br/api-conipa/requisicoes/minhas-pendentes.php?id_usuario=${usuario.id}&pagina=${paginaPendentes}&limite=${limitePendentes}`
+      `${API_BASE}requisicoes/minhas-pendentes.php?id_usuario=${usuario.id}&pagina=${paginaPendentes}&limite=${limitePendentes}`
     );
     const data = await response.json();
 
@@ -680,12 +712,18 @@ async function RequisicoesPendentes() {
   }
 }
 
+window.RequisicoesPendentes = RequisicoesPendentes;
+
 // Funções de paginação
+
 function proximaPaginaPendentes() {
   paginaPendentes++;
   RequisicoesPendentes();
 }
 
+window.proximaPaginaPendentes = proximaPaginaPendentes;
+
+window.proximaPagina = proximaPagina;
 function paginaAnteriorPendentes() {
   if (paginaPendentes > 1) {
     paginaPendentes--;
@@ -693,7 +731,12 @@ function paginaAnteriorPendentes() {
   }
 }
 
+window.paginaAnteriorPendentes = paginaAnteriorPendentes;
+
 function irParaPaginaPendentes(pagina) {
   paginaPendentes = pagina;
   RequisicoesPendentes();
 }
+
+window.irParaPaginaPendentes = irParaPaginaPendentes;
+
