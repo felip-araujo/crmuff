@@ -1,5 +1,7 @@
+import { API_BASE } from "../js/config/config.js";
+
 const titulo = document.getElementById("titulo");
-const Api = "https://evoludesign.com.br/api-conipa";
+const Api = API_BASE;
 
 // Função para formatar data YYYY-MM-DD HH:MM:SS → DD-MM-YYYY
 function formatarDataBR(dataStr) {
@@ -24,7 +26,8 @@ async function abrirModal(pagina = 1) {
   try {
     // Ajuste: enviar parâmetros que o PHP espera
     const response = await fetch(
-      `https://evoludesign.com.br/api-conipa/requisicoes/lsitar.php?pagina=${pagina}&por_pagina=${limiteModal}`
+      // `https://evoludesign.com.br/api-conipa/requisicoes/lsitar.php?pagina=${pagina}&por_pagina=${limiteModal}`
+      `${API_BASE}requisicoes/lsitar.php?pagina=${pagina}&por_pagina=${limiteModal}`
     );
     const data = await response.json();
 
@@ -122,13 +125,16 @@ async function abrirModal(pagina = 1) {
   }
 }
 
+window.abrirModal = abrirModal;
+
 async function excluirReqGeral(id) {
   let confirmacao = confirm("Realmente deseja excluir essa requisição?");
 
   if (confirmacao) {
     try {
       let response = await fetch(
-        "https://evoludesign.com.br/api-conipa/requisicoes/excluir.php",
+        // "https://evoludesign.com.br/api-conipa/requisicoes/excluir.php",
+        `${API_BASE}requisicoes/excluir.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -158,6 +164,8 @@ async function excluirReqGeral(id) {
   }
 }
 
+window.excluirReqGeral = excluirReqGeral;
+
 let paginaAtualPendentes = 1;
 const limitePendentes = 10; // 10 itens por página
 
@@ -177,7 +185,8 @@ async function abrirModalPendentes(pagina = 1, filtros = {}) {
 
   try {
     // Monta a querystring com pagina, limite e filtros
-    let url = `https://evoludesign.com.br/api-conipa/requisicoes/pendentes.php?pagina=${pagina}&limite=${limitePendentes}`;
+    // let url = `https://evoludesign.com.br/api-conipa/requisicoes/pendentes.php?pagina=${pagina}&limite=${limitePendentes}`;
+    let url = `${API_BASE}requisicoes/pendentes.php?pagina=${pagina}&limite=${limitePendentes}`;
 
     if (filtros.setor) url += `&setor=${encodeURIComponent(filtros.setor)}`;
     if (filtros.usuario) url += `&nome=${encodeURIComponent(filtros.usuario)}`;
@@ -320,6 +329,8 @@ async function abrirModalPendentes(pagina = 1, filtros = {}) {
   }
 }
 
+window.abrirModalPendentes = abrirModalPendentes;
+
 function aplicarFiltrosPendentes() {
   const filtros = {
     setor: document.getElementById("filtroSetor").value,
@@ -331,6 +342,8 @@ function aplicarFiltrosPendentes() {
   abrirModalPendentes(1, filtros);
 }
 
+window.aplicarFiltrosPendentes = aplicarFiltrosPendentes;
+
 function resetarFiltrosPendentes() {
   document.getElementById("filtroSetor").value = "";
   document.getElementById("filtroUsuario").value = "";
@@ -340,10 +353,14 @@ function resetarFiltrosPendentes() {
   abrirModalPendentes(1, {}); // volta sem filtro
 }
 
+window.resetarFiltrosPendentes = resetarFiltrosPendentes;
+
+
 async function atualizarPagamento(id, pago) {
   try {
     const response = await fetch(
-      "https://evoludesign.com.br/api-conipa/requisicoes/pago.php",
+      // "https://evoludesign.com.br/api-conipa/requisicoes/pago.php",
+      `${API_BASE}requisicoes/pago.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -370,13 +387,16 @@ async function atualizarPagamento(id, pago) {
   }
 }
 
+window.atualizarPagamento = atualizarPagamento;
+
 // Função para aprovar/rejeitar
 async function alterarStatus(id, status) {
   const nRequisicao = document.getElementById(`nReq-${id}`).value || null;
 
   try {
     const response = await fetch(
-      "https://evoludesign.com.br/api-conipa/requisicoes/aprovar-requisicao.php",
+      // "https://evoludesign.com.br/api-conipa/requisicoes/aprovar-requisicao.php",
+      `${API_BASE}requisicoes/aprovar-requisicao.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -403,8 +423,11 @@ async function alterarStatus(id, status) {
   }
 }
 
+window.alterarStatus = alterarStatus;
+
 let paginaAtualUsuarios = 1; // controla a página atual
 const limiteUsuarios = 10; // registros por página
+
 
 async function UsuariosPendentes(pagina = 1) {
   paginaAtualUsuarios = pagina;
@@ -548,6 +571,8 @@ async function UsuariosPendentes(pagina = 1) {
   }
 }
 
+window.UsuariosPendentes = UsuariosPendentes;
+
 async function atualizarStatus(userId) {
   const acao = document.getElementById(`acao_${userId}`).value;
   const tipo = document.getElementById(`tipo_${userId}`).value;
@@ -579,6 +604,8 @@ async function atualizarStatus(userId) {
   }
 }
 
+window.atualizarStatus = atualizarStatus;
+
 let paginaMaterial = 1;
 const limiteMaterial = 10;
 
@@ -597,7 +624,7 @@ async function verMaterial(pagina = 1, search = "") {
     `;
 
   try {
-    let url = `https://evoludesign.com.br/api-conipa/material/listar-material.php?page=${paginaMaterial}&limite=${limiteMaterial}`;
+    let url = `${API_BASE}material/listar-material.php?page=${paginaMaterial}&limite=${limiteMaterial}`;
     if (search) {
       url += `&search=${encodeURIComponent(search)}`;
     }
@@ -663,6 +690,8 @@ async function verMaterial(pagina = 1, search = "") {
   }
 }
 
+window.verMaterial = verMaterial;
+
 // Função de paginação dinâmica (máx. 5 botões)
 function renderPaginacao(paginaAtual, totalPaginas, search = "") {
   const paginacaoContainer = document.getElementById("paginacaoMaterial");
@@ -708,10 +737,14 @@ function renderPaginacao(paginaAtual, totalPaginas, search = "") {
   }
 }
 
+window.renderPaginacao = renderPaginacao;
+
 function buscarMaterial() {
   const search = document.getElementById("searchMaterial").value;
   verMaterial(1, search);
 }
+
+window.buscarMaterial = buscarMaterial
 
 function copiarCodigo(codigo) {
   navigator.clipboard
@@ -725,6 +758,8 @@ function copiarCodigo(codigo) {
     });
 }
 
+window.copiarCodigo = copiarCodigo;
+
 async function excluirMaterial(id) {
   let confirmacao = confirm("Realmente deseja excluir este material?");
 
@@ -735,7 +770,8 @@ async function excluirMaterial(id) {
 
   try {
     const response = await fetch(
-      "https://evoludesign.com.br/api-conipa/material/delete.php",
+      // "https://evoludesign.com.br/api-conipa/material/delete.php",
+      `${API_BASE}material/delete.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -762,6 +798,8 @@ async function excluirMaterial(id) {
   }
 }
 
+window.excluirMaterial = excluirMaterial;
+
 async function OpenAddMaterial() {
   const modal = document.getElementById("adicionarMaterial");
 
@@ -772,15 +810,16 @@ async function OpenAddMaterial() {
     modal.classList.remove("hidden");
   }
 }
+window.OpenAddMaterial = OpenAddMaterial;
 
 async function adicionarMaterial() {
-  codigo = document.getElementById("codigo_material").value;
-  descricao = document.getElementById("descricao_material").value;
-  grupo = document.getElementById("grupo_material").value;
+  let codigo = document.getElementById("codigo_material").value;
+  let descricao = document.getElementById("descricao_material").value;
+  let grupo = document.getElementById("grupo_material").value;
 
   try {
     const response = await fetch(
-      "https://evoludesign.com.br/api-conipa/material/adicionar.php",
+      `${API_BASE}material/adicionar.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -800,6 +839,8 @@ async function adicionarMaterial() {
 
   console.log(codigo, descricao, grupo);
 }
+
+window.adicionarMaterial = adicionarMaterial;
 
 let paginaAtualUserGeral = 1;
 const limiteUserGeral = 10; // 10 itens por página
@@ -821,7 +862,7 @@ async function usuariosGeral(pagina = 1) {
 
   try {
     const response = await fetch(
-      `https://evoludesign.com.br/api-conipa/usuarios/listar-todos.php?pagina=${pagina}&limite=${limiteUserGeral}`
+      `${API_BASE}usuarios/listar-todos.php?pagina=${pagina}&limite=${limiteUserGeral}`
     );
     const data = await response.json();
 
@@ -911,13 +952,15 @@ async function usuariosGeral(pagina = 1) {
   }
 }
 
+window.usuariosGeral = usuariosGeral;
+
 async function excluirUserGg(id) {
   let confirmacao = confirm("Realmente deseja excluir esse Usuário?");
 
   if (confirmacao) {
     try {
       let response = await fetch(
-        "https://evoludesign.com.br/api-conipa/usuarios/deletar-usuario.php",
+        `${API_BASE}usuarios/deletar-usuario.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -946,6 +989,8 @@ async function excluirUserGg(id) {
     console.log("Exclusão cancelada. ID:", id);
   }
 }
+
+window.excluirUserGg = excluirUserGg;
 
 function registrarClick() {
   // Se quiser enviar ID do usuário logado:
