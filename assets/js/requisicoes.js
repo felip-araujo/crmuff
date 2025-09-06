@@ -444,6 +444,8 @@ function aplicarBuscaData(valor) {
   minhasRequisicoes();
 }
 
+window.aplicarBuscaData = aplicarBuscaData
+
 function proximaPagina() {
   paginaAtual++;
   minhasRequisicoes();
@@ -455,6 +457,8 @@ function paginaAnterior() {
     minhasRequisicoes();
   }
 }
+
+window.paginaAnterior = paginaAnterior;
 
 document.addEventListener("DOMContentLoaded", minhasRequisicoes);
 
