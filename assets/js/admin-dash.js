@@ -224,7 +224,15 @@ async function abrirModalPendentes(pagina = 1, filtros = {}) {
           ? req.itens
               .map(
                 (item) =>
-                  `<div class="mb-1">• ${item.codigo_material} (Qtd: ${item.quantidade})</div>`
+                  `
+                
+<div class="mb-2 p-1 border rounded bg-gray-50 flex flex-col gap-1 text-sm dark:bg-zinc-800 dark:border-zinc-900">
+  <p class="text-gray-800 dark:text-gray-50"><strong>${item.descricao}</strong>
+   ${item.grupo} | Cód: ${item.codigo_material} </p>
+   <p class="text-gray-800 dark:text-gray-50">Qtd: <strong>${item.quantidade}</strong> </p>
+  
+</div>            
+                `
               )
               .join("")
           : '<span class="italic text-gray-400">Sem itens</span>';
@@ -240,11 +248,11 @@ async function abrirModalPendentes(pagina = 1, filtros = {}) {
       
               <td class="px-4 py-2">${req.nome}</td>
               <td class="px-4 py-2">${req.setor}</td>
-              <td class="px-4 py-2">${req.re}</td>
               <td class="px-4 py-2 uppercase">${req.status}</td>
               <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
       
               <td class="px-4 py-2 max-w-full overflow-x-auto mt-4 ">${itensHtml}</td>
+              
 
               <td class="px-4 py-2 flex gap-2">
                   <button onclick="alterarStatus(${req.id}, 'aprovado')" 
@@ -355,7 +363,6 @@ function resetarFiltrosPendentes() {
 
 window.resetarFiltrosPendentes = resetarFiltrosPendentes;
 
-
 async function atualizarPagamento(id, pago) {
   try {
     const response = await fetch(
@@ -427,7 +434,6 @@ window.alterarStatus = alterarStatus;
 
 let paginaAtualUsuarios = 1; // controla a página atual
 const limiteUsuarios = 10; // registros por página
-
 
 async function UsuariosPendentes(pagina = 1) {
   paginaAtualUsuarios = pagina;
@@ -744,7 +750,7 @@ function buscarMaterial() {
   verMaterial(1, search);
 }
 
-window.buscarMaterial = buscarMaterial
+window.buscarMaterial = buscarMaterial;
 
 function copiarCodigo(codigo) {
   navigator.clipboard
@@ -818,14 +824,11 @@ async function adicionarMaterial() {
   let grupo = document.getElementById("grupo_material").value;
 
   try {
-    const response = await fetch(
-      `${API_BASE}material/adicionar.php`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ codigo, descricao, grupo }),
-      }
-    );
+    const response = await fetch(`${API_BASE}material/adicionar.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ codigo, descricao, grupo }),
+    });
 
     const resposta = await response.json();
     if (resposta.sucess) {
@@ -959,14 +962,11 @@ async function excluirUserGg(id) {
 
   if (confirmacao) {
     try {
-      let response = await fetch(
-        `${API_BASE}usuarios/deletar-usuario.php`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id_usuario: id }),
-        }
-      );
+      let response = await fetch(`${API_BASE}usuarios/deletar-usuario.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_usuario: id }),
+      });
 
       let resultado = await response.json();
 
