@@ -1,6 +1,5 @@
 import { API_BASE } from "../js/config/config.js";
 
-
 let itensRequisicao = [];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -110,7 +109,6 @@ async function buscarMaterialPorCodigo(codigo) {
 
 window.buscarMaterialPorCodigo = buscarMaterialPorCodigo;
 
-
 // 💬 Mostrar info do material corretamente
 function mostrarInfoMaterial(material) {
   let divInfo = document.getElementById("infoMaterial");
@@ -148,6 +146,16 @@ async function adicionarItem() {
   const qtd = document.getElementById("quantidade_item").value;
 
   if (cod && qtd) {
+    const material = await buscarMaterialPorCodigo(cod);
+    console.log(material.material[0].descricao);
+    console.log(material.material[0].grupo);
+    const desc = material.material[0].descricao;
+
+    if (!material || material.success === false) {
+      alert("Código do material não encontrado. Verifique e tente novamente.");
+      return; // Sai da função sem adicionar
+    }
+
     // Adiciona no array de itens
     itensRequisicao.push({
       codigo_material: cod,
@@ -156,22 +164,22 @@ async function adicionarItem() {
 
     // Exibe na lista visual
     const nenhum = document.getElementById("nenhum");
-    nenhum.remove();
+    if (nenhum) {
+      nenhum.remove();
+    }
+
+
 
     const div = document.createElement("div");
-    div.innerHTML = 
-    
-    `
+    div.innerHTML = `
     <div id="cont" class="columns-2xs justify-between flex">
-      <div id="item"> Código: ${cod} | Quantidade: ${qtd} </div> 
+      <div id="item"> <strong> ${desc} </strong> | Código: ${cod} | Quantidade: ${qtd}  </div> 
       <div class="flex justify-end"> <button onclick="removerItem(this)" class="text-red-600" ><i class="fa-solid fa-trash"></i></button>  </div>
     </div>
     
     
-    ` ;
+    `;
     lista.appendChild(div);
-
-  
 
     // Limpar inputs
     document.getElementById("codigo_material").value = "";
@@ -185,16 +193,13 @@ window.adicionarItem = adicionarItem;
 async function removerItem(button) {
   // button é o botão clicado
   const divItem = button.closest("div.columns-2xs"); // pega a div principal do item
-  if(divItem){
+  if (divItem) {
     divItem.remove(); // remove todo o item (dados + botão)
     console.log("Item removido com sucesso");
   }
 }
 
 window.removerItem = removerItem;
-
-
-
 
 async function enviarRequisicao() {
   const sucesso = document.getElementById("sucesso");
@@ -218,9 +223,9 @@ async function enviarRequisicao() {
   // Captura os itens adicionados
   const itens = [];
   listaItens.querySelectorAll("div.columns-2xs").forEach((div) => {
-    const texto = div.querySelector("div:first-child").textContent; 
+    const texto = div.querySelector("div:first-child").textContent;
     // primeira div dentro de columns-2xs contém "Código: 12345 | Quantidade: 10"
-  
+
     const match = texto.match(/Código:\s*(\S+)\s*\|\s*Quantidade:\s*(\d+)/);
     if (match) {
       itens.push({
@@ -291,9 +296,6 @@ async function abrirModal() {
 
 window.abrirModal = abrirModal;
 
-
-
-
 async function fecharModal() {
   const modal = document.getElementById("modalRequisicao");
   if (typeof modal.close === "function") {
@@ -305,7 +307,6 @@ async function fecharModal() {
 
 window.fecharModal = fecharModal;
 
-
 function formatarDataBR(dataStr) {
   if (!dataStr) return "";
   const [data] = dataStr.split(" "); // pega só a parte da data
@@ -314,7 +315,6 @@ function formatarDataBR(dataStr) {
 }
 
 window.formatarDataBR = formatarDataBR;
-
 
 let paginaAtual = 1;
 let buscaCodigo = "";
@@ -473,7 +473,7 @@ function aplicarBuscaData(valor) {
   minhasRequisicoes();
 }
 
-window.aplicarBuscaData = aplicarBuscaData
+window.aplicarBuscaData = aplicarBuscaData;
 
 function proximaPagina() {
   paginaAtual++;
@@ -504,7 +504,6 @@ async function fecharHistorico() {
 }
 
 window.fecharHistorico = fecharHistorico;
-
 
 let paginaMaterial = 1;
 const limiteMaterial = 10;
@@ -616,7 +615,11 @@ function renderPaginacao(paginaAtual, totalPaginas, search = "") {
   // Botões numéricos
   for (let i = inicio; i <= fim; i++) {
     paginacaoContainer.innerHTML += `
-      <button class="px-3 py-1 mx-1 ${i === paginaAtual ? 'bg-blue-600 text-white' : 'bg-gray-300 hover:bg-gray-400'} rounded"
+      <button class="px-3 py-1 mx-1 ${
+        i === paginaAtual
+          ? "bg-blue-600 text-white"
+          : "bg-gray-300 hover:bg-gray-400"
+      } rounded"
         onclick="verMaterial(${i}, '${search}')">${i}</button>
     `;
   }
@@ -630,7 +633,6 @@ function renderPaginacao(paginaAtual, totalPaginas, search = "") {
   }
 }
 
-
 function buscarMaterial() {
   const search = document.getElementById("searchMaterial").value;
   verMaterial(1, search);
@@ -638,7 +640,7 @@ function buscarMaterial() {
 
 window.buscarMaterial = buscarMaterial;
 
-function copiarCodigo(codigo) {
+ function copiarCodigo(codigo) {
   navigator.clipboard
     .writeText(codigo)
     .then(() => {
@@ -650,9 +652,7 @@ function copiarCodigo(codigo) {
     });
 }
 
-
 window.copiarCodigo = copiarCodigo;
-
 
 let paginaPendentes = 1;
 const limitePendentes = 5;
@@ -689,7 +689,9 @@ async function RequisicoesPendentes() {
 
     // Popula tabela
     data.requisicoes.forEach((req) => {
-      const itens = req.itens.map(i => `${i.codigo_material} (${i.quantidade})`).join(", ");
+      const itens = req.itens
+        .map((i) => `${i.codigo_material} (${i.quantidade})`)
+        .join(", ");
       const row = `
         <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
           
@@ -708,7 +710,10 @@ async function RequisicoesPendentes() {
     const paginaAtual = data.paginacao.pagina_atual;
     const maxPaginasVisiveis = 5;
 
-    let inicioPagina = Math.max(1, paginaAtual - Math.floor(maxPaginasVisiveis / 2));
+    let inicioPagina = Math.max(
+      1,
+      paginaAtual - Math.floor(maxPaginasVisiveis / 2)
+    );
     let fimPagina = inicioPagina + maxPaginasVisiveis - 1;
     if (fimPagina > totalPaginas) {
       fimPagina = totalPaginas;
@@ -722,7 +727,11 @@ async function RequisicoesPendentes() {
     }
 
     for (let i = inicioPagina; i <= fimPagina; i++) {
-      paginacaoHTML += `<button onclick="irParaPaginaPendentes(${i})" class="px-3 py-1 rounded ${i === paginaAtual ? "bg-blue-600 text-white" : "bg-gray-200 dark:bg-gray-600 dark:text-white"}">${i}</button>`;
+      paginacaoHTML += `<button onclick="irParaPaginaPendentes(${i})" class="px-3 py-1 rounded ${
+        i === paginaAtual
+          ? "bg-blue-600 text-white"
+          : "bg-gray-200 dark:bg-gray-600 dark:text-white"
+      }">${i}</button>`;
     }
 
     if (data.paginacao.tem_proximo) {
@@ -731,7 +740,6 @@ async function RequisicoesPendentes() {
 
     paginacaoHTML += `</div></td></tr>`;
     tabela.insertAdjacentHTML("beforeend", paginacaoHTML);
-
   } catch (err) {
     console.error("Erro ao buscar dados:", err);
     tabela.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar requisições pendentes.</td></tr>`;
@@ -772,4 +780,3 @@ function irParaPaginaPendentes(pagina) {
 }
 
 window.irParaPaginaPendentes = irParaPaginaPendentes;
-
