@@ -221,46 +221,51 @@ async function abrirModalPendentes(pagina = 1, filtros = {}) {
 
       requisicoes.forEach((req) => {
         const itensHtml = Array.isArray(req.itens)
-          ? req.itens
-              .map(
-                (item) =>
-                  `
-                
-<div class="mb-2 p-1 border rounded bg-gray-50 flex flex-col gap-1 text-sm dark:bg-zinc-800 dark:border-zinc-900">
-  <p class="text-gray-800 dark:text-gray-50"><strong>${item.descricao}</strong>
-   ${item.grupo} | Cód: ${item.codigo_material} </p>
-   <p class="text-gray-800 dark:text-gray-50">Qtd: <strong>${item.quantidade}</strong> </p>
-  
-</div>            
-                `
-              )
-              .join("")
+          ? `<div class="max-h-48 overflow-y-auto flex flex-col gap-1">
+              ${req.itens
+                .map(
+                  (item) => `
+                <div class="inline-block p-2 border rounded bg-gray-50 text-sm 
+                            dark:bg-zinc-800 dark:border-zinc-900 shadow-sm">
+                  <p class="font-semibold text-gray-800 dark:text-gray-50 mb-0">
+                    ${item.descricao}
+                  </p>
+                  <p class="text-gray-500 dark:text-gray-300 text-xs mb-0">
+                    ${item.grupo} | Cód: ${item.codigo_material}
+                  </p>
+                  <p class="text-gray-500 dark:text-gray-300 text-xs mb-0">
+                    Qtd: <strong>${item.quantidade}</strong>
+                  </p>
+                </div>`
+                )
+                .join("")}
+            </div>`
           : '<span class="italic text-gray-400">Sem itens</span>';
 
         const row = `
           <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-              
               <td class="px-4 py-2">
                   <input type="text" id="nReq-${req.id}" 
                          class="border border-gray-300 rounded px-2 py-1 w-24 text-sm text-center dark:bg-stone-900 dark:text-white"
                          placeholder="Nº Req">
               </td>
       
-              <td class="px-4 py-2">${req.nome}</td>
-              <td class="px-4 py-2">${req.setor}</td>
-              <td class="px-4 py-2 uppercase">${req.status}</td>
-              <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
-      
-              <td class="px-4 py-2 max-w-full overflow-x-auto mt-4 ">${itensHtml}</td>
-              
+              <td class="px-4 py-2 whitespace-nowrap">${req.nome}</td>
+              <td class="px-4 py-2 whitespace-nowrap">${req.setor}</td>
+              <td class="px-4 py-2 whitespace-nowrap">
+  ${formatarDataBR(req.criado_em)}
+</td>
 
-              <td class="px-4 py-2 flex gap-2">
+      
+              <td class="px-4 py-2 max-w-full">${itensHtml}</td>
+      
+              <td class="">
                   <button onclick="alterarStatus(${req.id}, 'aprovado')" 
                       class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700">Aprovar</button>
                   <button onclick="alterarStatus(${req.id}, 'rejeitado')" 
                       class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">Rejeitar</button>
               </td>
-
+      
               <td class="px-4 py-2 text-center">
                   <input type="checkbox" 
                          ${req.pago == 1 ? "checked" : ""} 
@@ -269,7 +274,7 @@ async function abrirModalPendentes(pagina = 1, filtros = {}) {
                          }, this.checked ? 1 : 0)">
               </td>
           </tr>
-      `;
+        `;
 
         tabela.insertAdjacentHTML("beforeend", row);
       });
