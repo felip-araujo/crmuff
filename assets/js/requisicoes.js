@@ -147,14 +147,16 @@ async function adicionarItem() {
 
   if (cod && qtd) {
     const material = await buscarMaterialPorCodigo(cod);
-    console.log(material.material[0].descricao);
-    console.log(material.material[0].grupo);
-    const desc = material.material[0].descricao;
+    // console.log(material.material[0].descricao);
+    // console.log(material.material[0].grupo);
+    
 
     if (!material || material.success === false) {
       alert("Código do material não encontrado. Verifique e tente novamente.");
       return; // Sai da função sem adicionar
     }
+
+    const desc = material.material[0].descricao;
 
     // Adiciona no array de itens
     itensRequisicao.push({
