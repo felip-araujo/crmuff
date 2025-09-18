@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mostrarInfoMaterial(material);
       } else {
         limparInfoMaterial();
-        alert("Material não encontrado para o código informado.");
+        alert("Material não encontrado, informe um código válido!");
       }
     });
   } else {
@@ -155,9 +155,23 @@ async function adicionarItem() {
     });
 
     // Exibe na lista visual
-    const p = document.createElement("p");
-    p.textContent = `Código: ${cod}, Quantidade: ${qtd}`;
-    lista.appendChild(p);
+    const nenhum = document.getElementById("nenhum");
+    nenhum.remove();
+
+    const div = document.createElement("div");
+    div.innerHTML = 
+    
+    `
+    <div id="cont" class="columns-2xs justify-between flex">
+      <div id="item"> Código: ${cod} | Quantidade: ${qtd} </div> 
+      <div class="flex justify-end"> <button onclick="removerItem(this)" class="text-red-600" ><i class="fa-solid fa-trash"></i></button>  </div>
+    </div>
+    
+    
+    ` ;
+    lista.appendChild(div);
+
+  
 
     // Limpar inputs
     document.getElementById("codigo_material").value = "";
@@ -167,6 +181,19 @@ async function adicionarItem() {
 }
 
 window.adicionarItem = adicionarItem;
+
+async function removerItem(button) {
+  // button é o botão clicado
+  const divItem = button.closest("div.columns-2xs"); // pega a div principal do item
+  if(divItem){
+    divItem.remove(); // remove todo o item (dados + botão)
+    console.log("Item removido com sucesso");
+  }
+}
+
+window.removerItem = removerItem;
+
+
 
 
 async function enviarRequisicao() {
@@ -190,9 +217,11 @@ async function enviarRequisicao() {
 
   // Captura os itens adicionados
   const itens = [];
-  listaItens.querySelectorAll("p").forEach((p) => {
-    const texto = p.textContent; // "Código: 12345, Quantidade: 10"
-    const match = texto.match(/Código:\s*(\S+),\s*Quantidade:\s*(\d+)/);
+  listaItens.querySelectorAll("div.columns-2xs").forEach((div) => {
+    const texto = div.querySelector("div:first-child").textContent; 
+    // primeira div dentro de columns-2xs contém "Código: 12345 | Quantidade: 10"
+  
+    const match = texto.match(/Código:\s*(\S+)\s*\|\s*Quantidade:\s*(\d+)/);
     if (match) {
       itens.push({
         codigo_material: match[1],
