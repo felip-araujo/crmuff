@@ -58,7 +58,7 @@ async function abrirModal(pagina = 1) {
                 ${req.nome.split(" ").slice(0, 2).join(" ")}
               </td>
               
-                <td class="px-4 py-2 whitespace-nowrap align-middle">${req.setor}</td>
+                <td class="px-4 py-2 whitespace-nowrap align-middle text-center">${req.setor}</td>
                 <td class="px-4 py-2 whitespace-nowrap align-middle">${req.re}</td>
                 <td class="px-4 py-2 uppercase align-middle">
                 <strong class="${
