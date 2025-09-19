@@ -43,7 +43,9 @@ async function abrirModal(pagina = 1) {
             ? req.itens
                 .map(
                   (item) =>
-                    `<div class="mb-1">• ${item.codigo_material} (Qtd: ${item.quantidade})</div>`
+                    `
+                  <div class="mb-1">• ${item.codigo_material} (Qtd: ${item.quantidade})</div>
+                  `
                 )
                 .join("")
             : '<span class="italic text-gray-400">Sem itens</span>';
