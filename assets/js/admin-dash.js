@@ -53,17 +53,29 @@ async function abrirModal(pagina = 1) {
 
           const row = `
             <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700 text-base align-top">
-                <td class="px-6 py-4 font-semibold text-gray-800 dark:text-gray-200">${req.n_requisicao || "-"}</td>
-                <td class="px-4 py-2 whitespace-nowrap" title="${req.nome}">
+                <td class="px-6 py-4 font-semibold text-gray-800 dark:text-gray-200 align-middle">${req.n_requisicao || "-"}</td>
+                <td class="px-4 py-2 whitespace-nowrap align-middle" title="${req.nome}">
                 ${req.nome.split(" ").slice(0, 2).join(" ")}
               </td>
               
-                <td class="px-4 py-2 whitespace-nowrap">${req.setor}</td>
-                <td class="px-4 py-2 whitespace-nowrap">${req.re}</td>
-                <td class="px-4 py-2 uppercase">${req.status}</td>
-                <td class="px-4 py-2 whitespace-nowrap">${formatarDataBR(req.criado_em)}</td>
+                <td class="px-4 py-2 whitespace-nowrap align-middle">${req.setor}</td>
+                <td class="px-4 py-2 whitespace-nowrap align-middle">${req.re}</td>
+                <td class="px-4 py-2 uppercase align-middle">
+                <strong class="${
+                  req.status.toLowerCase() === "aprovado"
+                    ? "text-green-600"
+                    : req.status.toLowerCase() === "pendente"
+                    ? "text-red-600"
+                    : "text-gray-500 dark:text-gray-400"
+                }">
+                  ${req.status}
+                </strong>
+              </td>
+              
+
+                <td class="px-4 py-2 whitespace-nowrap align-middle">${formatarDataBR(req.criado_em)}</td>
                 <td class="px-4 py-2 max-w-[350px] align-top">${itensHtml}</td>
-                <td class="px-4 py-2">
+                <td class="px-4 py-2 align-middle">
                     <button onclick="excluirReqGeral(${req.id})" class="bg-red-600 text-white px-4 py-2 rounded-lg text-base font-medium hover:bg-red-700 transition">Excluir</button>
                 </td>
                
