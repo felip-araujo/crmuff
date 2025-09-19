@@ -19,113 +19,89 @@ async function abrirModal(pagina = 1) {
 
   const modal = document.getElementById("modalRequisicao");
   const tabela = document.getElementById("tabelaRequisicoes");
+  const titulo = document.getElementById("titulo");
 
   titulo.textContent = "Todas as Requisições";
-  tabela.innerHTML = `<tr><td colspan="8" class="p-4 text-center italic text-gray-500">Carregando...</td></tr>`;
+  tabela.innerHTML = `<tr><td colspan="9" class="p-4 text-center italic text-gray-500">Carregando...</td></tr>`;
 
   try {
-    // Ajuste: enviar parâmetros que o PHP espera
+    // Buscando todas as requisições da página, mas sem limitar os itens
     const response = await fetch(
-      // `https://evoludesign.com.br/api-conipa/requisicoes/lsitar.php?pagina=${pagina}&por_pagina=${limiteModal}`
-      `${API_BASE}requisicoes/lsitar.php?pagina=${pagina}&por_pagina=${limiteModal}`
+      `${API_BASE}requisicoes/lsitar.php?pagina=${pagina}&por_pagina=${limiteModal}&com_itens=1`
     );
     const data = await response.json();
 
     if (data.success) {
       if (!data.requisicoes || data.requisicoes.length === 0) {
-        tabela.innerHTML = `<tr><td colspan="8" class="p-4 text-center italic text-gray-500">Nenhuma requisição encontrada.</td></tr>`;
+        tabela.innerHTML = `<tr><td colspan="9" class="p-4 text-center italic text-gray-500">Nenhuma requisição encontrada.</td></tr>`;
       } else {
         tabela.innerHTML = "";
 
-        // Renderiza linhas
         data.requisicoes.forEach((req) => {
-          const itensHtml = Array.isArray(req.itens)
-            ? req.itens
-                .map(
-                  (item) =>
-                    `
-                  <div class="mb-1">• ${item.codigo_material} (Qtd: ${item.quantidade})</div>
-                  `
-                )
-                .join("")
+          // Itens com scroll interno (igual ao modal de pendentes)
+          const itensHtml = Array.isArray(req.itens) && req.itens.length > 0
+            ? `<div class="max-h-96 overflow-y-auto flex flex-col gap-1"> <!-- aumenta max-h para caber mais itens -->
+                ${req.itens.map(item => `
+                  <div class="p-2 border rounded bg-gray-50 text-sm dark:bg-zinc-800 dark:border-zinc-900 shadow-sm">
+                    <p class="font-semibold text-gray-800 dark:text-gray-50 mb-0">${item.descricao}</p>
+                    <p class="text-gray-500 dark:text-gray-300 text-xs mb-0">${item.grupo} | Cód: ${item.codigo_material}</p>
+                    <p class="text-gray-500 dark:text-gray-300 text-xs mb-0">Qtd: <strong>${item.quantidade}</strong></p>
+                  </div>
+                `).join("")}
+              </div>`
             : '<span class="italic text-gray-400">Sem itens</span>';
 
           const row = `
-            <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700 text-base">
-                <td class="px-6 py-4 font-semibold text-gray-800 dark:text-gray-200">${
-                  req.n_requisicao ? req.n_requisicao : "-"
-                }</td>
-                <td class="px-4 py-2">${req.nome}</td>
-                <td class="px-4 py-2">${req.setor}</td>
-                <td class="px-4 py-2">${req.re}</td>
-                <td class="px-4 py-2 uppercase">${req.status}</td>
-                <td class="px-4 py-2">${formatarDataBR(req.criado_em)}</td>
-                <td class="px-4 py-2 max-w-[350px] whitespace-normal break-words">${itensHtml}</td>
-                <td class="px-4 py-2">
-                    <button onclick="excluirReqGeral(${req.id})" 
-                        class="bg-red-600 text-white px-4 py-2 rounded-lg text-base font-medium hover:bg-red-700 transition">
-                        Excluir
-                    </button>
-                </td>
-                <td class="px-4 py-2 text-center">
-                  <input type="checkbox" 
-                         ${req.pago == 1 ? "checked" : ""} 
-                         onchange="atualizarPagamento(${
-                           req.id
-                         }, this.checked ? 1 : 0)">
+            <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700 text-base align-top">
+                <td class="px-6 py-4 font-semibold text-gray-800 dark:text-gray-200">${req.n_requisicao || "-"}</td>
+                <td class="px-4 py-2 whitespace-nowrap" title="${req.nome}">
+                ${req.nome.split(" ").slice(0, 2).join(" ")}
               </td>
+              
+                <td class="px-4 py-2 whitespace-nowrap">${req.setor}</td>
+                <td class="px-4 py-2 whitespace-nowrap">${req.re}</td>
+                <td class="px-4 py-2 uppercase">${req.status}</td>
+                <td class="px-4 py-2 whitespace-nowrap">${formatarDataBR(req.criado_em)}</td>
+                <td class="px-4 py-2 max-w-[350px] align-top">${itensHtml}</td>
+                <td class="px-4 py-2">
+                    <button onclick="excluirReqGeral(${req.id})" class="bg-red-600 text-white px-4 py-2 rounded-lg text-base font-medium hover:bg-red-700 transition">Excluir</button>
+                </td>
+               
             </tr>
-        `;
-
+          `;
           tabela.insertAdjacentHTML("beforeend", row);
         });
 
         // Paginação
         const totalPaginas = data.total_paginas;
         const paginaAtual = data.pagina_atual;
+        let paginacaoHTML = `<tr><td colspan="9" class="px-4 py-2 text-center"><div class="flex justify-center gap-2 mt-4">`;
 
-        let paginacaoHTML = `<tr><td colspan="8" class="px-4 py-2 text-center"><div class="flex justify-center gap-2 mt-4">`;
+        paginacaoHTML += `<button ${paginaAtual === 1 ? "disabled" : ""} onclick="abrirModal(${paginaAtual-1})" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 dark:text-white">Anterior</button>`;
 
-        // Botão Anterior
-        paginacaoHTML += `<button ${
-          paginaAtual === 1 ? "disabled" : ""
-        } onclick="abrirModal(${
-          paginaAtual - 1
-        })" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 dark:text-white">Anterior</button>`;
-
-        // Páginas visíveis (máx 5)
         let startPage = Math.max(paginaAtual - 2, 1);
         let endPage = Math.min(startPage + 4, totalPaginas);
-
         for (let i = startPage; i <= endPage; i++) {
-          paginacaoHTML += `<button onclick="abrirModal(${i})" class="px-3 py-1 rounded ${
-            i === paginaAtual
-              ? "bg-blue-600 text-white"
-              : "bg-gray-200 dark:bg-gray-600 dark:text-white"
-          }">${i}</button>`;
+          paginacaoHTML += `<button onclick="abrirModal(${i})" class="px-3 py-1 rounded ${i===paginaAtual ? "bg-blue-600 text-white" : "bg-gray-200 dark:bg-gray-600 dark:text-white"}">${i}</button>`;
         }
 
-        // Botão Próximo
-        paginacaoHTML += `<button ${
-          paginaAtual === totalPaginas ? "disabled" : ""
-        } onclick="abrirModal(${
-          paginaAtual + 1
-        })" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 dark:text-white">Próximo</button>`;
-
+        paginacaoHTML += `<button ${paginaAtual === totalPaginas ? "disabled" : ""} onclick="abrirModal(${paginaAtual+1})" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-600 dark:text-white">Próximo</button>`;
         paginacaoHTML += `</div></td></tr>`;
         tabela.insertAdjacentHTML("beforeend", paginacaoHTML);
       }
     } else {
-      tabela.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar dados da API.</td></tr>`;
+      tabela.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-red-600">Erro ao carregar dados da API.</td></tr>`;
     }
 
     if (typeof modal.showModal === "function") modal.showModal();
     else modal.classList.remove("hidden");
   } catch (error) {
     console.error("Erro ao buscar dados:", error);
-    tabela.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-red-600">Erro ao carregar requisições.</td></tr>`;
+    tabela.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-red-600">Erro ao carregar requisições.</td></tr>`;
   }
 }
+
+
 
 window.abrirModal = abrirModal;
 
@@ -252,7 +228,9 @@ async function abrirModalPendentes(pagina = 1, filtros = {}) {
                          placeholder="Nº Req">
               </td>
       
-              <td class="px-4 py-2 whitespace-nowrap">${req.nome}</td>
+              <td class="px-4 py-2 whitespace-nowrap" title="${req.nome}">
+              ${req.nome.split(" ").slice(0, 3).join(" ")}
+            </td>
               <td class="px-4 py-2 whitespace-nowrap">${req.setor}</td>
               <td class="px-4 py-2 whitespace-nowrap">
   ${formatarDataBR(req.criado_em)}

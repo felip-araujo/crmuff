@@ -121,34 +121,27 @@
 
                     <!-- Tabela com scroll -->
                     <div class="flex-1 overflow-auto">
+
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
                             <thead class="bg-gray-100 dark:bg-gray-800 sticky top-0 z-10">
-                                <tr>
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">
-                                        Número</th>
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Nome
-                                    </th>
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Setor
-                                    </th>
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">RE
-                                    </th>
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">
-                                        Status</th>
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Data
-                                    </th>
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Itens
-                                    </th>
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Ação
-                                    </th>
-                                    <th class="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300">Pago
-                                    </th>
-                                </tr>
+                              <tr>
+                                <th class="px-6 py-4 ...">Número</th>
+                                <th class="px-6 py-4 ...">Nome</th>
+                                <th class="px-6 py-4 ...">Setor</th>
+                                <th class="px-6 py-4 ...">RE</th>
+                                <th class="px-6 py-4 ...">Status</th>
+                                <th class="px-6 py-4 ...">Data</th>
+                                <!-- força largura fixa da coluna Itens -->
+                                <th class="px-6 py-4 ... " style="width:420px; max-width:420px;">Itens</th>
+                                <th class="px-6 py-4 ...">Ação</th>
+                                <!-- <th class="px-6 py-4 ...">Pago</th> -->
+                              </tr>
                             </thead>
-                            <tbody id="tabelaRequisicoes"
-                                class="bg-white dark:bg-stone-950 divide-y divide-gray-200 dark:divide-gray-800 text-gray-800 dark:text-gray-100">
-                                <!-- Linhas dinâmicas aqui -->
+                            <tbody id="tabelaRequisicoes" class="...">
+                              <!-- linhas dinâmicas -->
                             </tbody>
-                        </table>
+                          </table>
+                          
                     </div>
                 </div>
             </div>
