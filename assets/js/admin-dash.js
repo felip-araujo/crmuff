@@ -54,7 +54,7 @@ async function abrirModal(pagina = 1) {
           const row = `
             <tr class="hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-700 text-base align-top">
                 <td class="px-6 py-4 font-semibold text-gray-800 dark:text-gray-200 align-middle">${req.n_requisicao || "-"}</td>
-                <td class="px-4 py-2 whitespace-nowrap align-middle" title="${req.nome}">
+                <td class="px-4 py-2 whitespace-nowrap align-middle uppercase" title="${req.nome}">
                 ${req.nome.split(" ").slice(0, 2).join(" ")}
               </td>
               
